@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Choose</title>
+
+	<script src="libraries/p5.js"></script>
+	<script src="libraries/p5.dom.js"></script>
+	<script src="libraries/p5.sound.js"></script>
+	<!-- <script src="sketch.js" type="text/javascript"></script> -->
+	<script
+		  src="https://code.jquery.com/jquery-3.2.1.js"
+		  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+		  crossorigin="anonymous">
+	</script>
+	<script src="app.js" type="text/javascript"></script>
+
+	<link href="meyerreset.css" rel="stylesheet" type="text/css">
+	<link href="main.css" rel="stylesheet" type="text/css">
+
+</head>
+<body onload="renderGalleryAndShowcase();">
+	<div id="wrapper">
+		<header role="banner"><image src="media/agnosia_logo.png" alt="agnosia logo"></header>
+		<main role="main">
+			<a id="dashboard-link" href="dashboard.html">User Dashboard</a>
+			<a id="settings-link" href="settings.html">User Settings</a>
+			<div class="square1"><div  id="js-artwork-thumb"></div><div class="plack-white"><a href="gallery.html"><h2>My Work</h2></a></div></div>
+			<div class="square2"><div  id="js-theatre-thumb"></div><div class="plack-black"><a href="showcase.html"><h2>All Work</h2></a></div>
+		</main>
+		<footer role="contentinfo">
+			<a href="showcase.html">Showcase</a>
+			<a href="gallery.html">Gallery</a>
+		</footer>
+	</div>
+
+
+</body>
+</html>
+

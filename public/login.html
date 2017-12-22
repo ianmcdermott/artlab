@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Login</title>
+
+	<script src="libraries/p5.js"></script>
+	<script src="libraries/p5.dom.js"></script>
+	<script src="libraries/p5.sound.js"></script>
+	<!-- <script src="image.js" type="text/javascript"></script> -->
+	<script
+		  src="https://code.jquery.com/jquery-3.2.1.js"
+		  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+		  crossorigin="anonymous">
+	</script>
+	<script src="app.js" type="text/javascript"></script>
+	<link href="meyerreset.css" rel="stylesheet" type="text/css">
+	<link href="main.css" rel="stylesheet" type="text/css">
+
+</head>
+<body onload="loginUser();">
+	<div id="wrapper">
+		<header role="banner"><image src="media/agnosia_logo.png" alt="agnosia logo"></header>
+		<main role="main">
+			<p class=description>Artapp is a collaborative animation project. Each user draws a frame based on guide parameters. That frame is placed in a sequence of other user's images to create a semi-cohesive animation based on each artist's subjective interpretation.</p>
+			<form id="js-login-user-form" action="dashboard.html">
+				<legend>Login</legend>
+				<input type='text' name="Username" id="js-login-username" placeholder="Username">
+				<input type='password' name="Password" id="js-login-password" placeholder="Password">
+				<input type="submit" id="js-submit-btn" value="Login">
+			</form>
+			<div class="centered">
+				<p>Don't have an account? <a class="link" href="register.html">Register Here</a></p>
+			</div>
+		</main>
+		<footer role="contentinfo">
+		</footer>
+	</div>
+	<script
+		  src="https://code.jquery.com/jquery-3.2.1.js"
+		  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+		  crossorigin="anonymous">
+	</script>
+
+</body>
+</html>
+

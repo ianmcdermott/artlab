@@ -1,0 +1,300 @@
+html {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit;
+}
+
+body {
+	margin:0;
+	padding:0;
+	height: 100%;
+}
+
+p, h1, h2, h3, h4, h5, h6, a, div{
+	  font-family: 'Muli', sans-serif;
+
+}
+
+header{
+	text-align: center;
+	padding: 15px;
+	font-size: 50px;
+}
+
+canvas {
+	margin: 0 auto;
+	display: block;
+}
+
+main{
+	background-color: #fff;
+	width: 1170px;
+	margin: 0 auto;
+	position: relative;
+}
+
+footer{
+	clear: both;
+	padding: 15px;
+	text-align: center;
+}
+
+footer a{
+	padding: 10px;
+	font-size: 20px;
+}
+
+a:visited{
+	text-decoration: none;
+	color: #000;
+}
+
+a:visited{
+	text-decoration: none;
+	color: #000;
+}
+
+form{
+	text-align: center;
+	padding: 15px;
+}
+
+
+a{
+	text-decoration: none;
+	color: #000;
+}
+
+a:hover{
+	font-weight: 700;
+		color: #000;
+
+}
+
+
+#wrapper{
+	height: 100%;
+	position: relative;
+	display: block;
+}
+
+#js-user-header{
+	text-align: center;
+	margin: 15px;
+	font-size: 30px;
+
+}
+
+#js-make-art{
+	display: block;
+	margin: 0 auto;
+	width: 100%;
+}
+
+#js-view-art{
+
+}
+
+#js-user-info{
+	clear: both;
+}
+
+#dashboard-link, #settings-link{
+	display: inline-block;
+	padding: 5px;
+	position: relative;
+	border: 4px solid #000;
+	border-left: ;
+	font-size: 1.5em;
+	margin-bottom: 10px;
+}
+
+#dashboard-link{
+	float: left;
+}
+
+#settings-link{
+	float: right;
+}
+
+#dashboard-link:hover, #settings-link:hover{
+	background-color: #FFCE2E;
+	font-weight: normal;
+}
+
+#dashboard-link p{
+	right: 0;
+	float: right;
+	position: absolute;
+	display: inline;
+}
+
+#js-sketch-holder{
+	width: 100%;
+}
+
+
+
+#js-animation-info p{
+	text-align: center;
+}
+
+#js-animation-thumb, #js-artwork-thumb{
+	margin: 10px auto;
+	height: 100%;
+}
+
+#js-instructions{
+	text-align: center;
+	clear: both;
+}
+
+#js-view-art{
+	text-align: center;
+}
+
+#js-view-art image{
+	text-align: center;
+	max-width: 20%;
+}
+
+#js-theatre-holder{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 10 auto;
+}
+
+#js-artwork-clear{
+	margin: 0 auto;
+	text-align: center;
+}
+
+#js-delete-profile{
+	margin: 0 auto;
+	position: relative;
+	display: block;
+}
+
+.square1, .square2{
+	clear: right;
+}
+
+.square1{
+	width: 50%;
+	background-color: #fff;
+	border: 10px solid #000;
+	color: #000;
+	margin: 0;
+	padding: 10px;
+	position: relative;
+	text-align: center;
+	float: left;
+	display: block;
+}
+
+.square2{
+	width: 50%;
+	background-color: #000;
+	border: 10px solid #fff;
+	color: #fff;
+	margin: 0;
+	padding: 10px;
+	position: relative;
+	text-align: center;
+	float: left;
+	display: block;	
+}
+
+.square1 image, .square2 image{
+	margin: 0;
+	padding: 15px;
+}
+
+.plack-white, .plack-black, .plack-white-static, .plack-black-static{
+	padding: 10px;
+	width: 60%;
+	margin: 0 auto;
+	bottom: 20px;
+	display: absolute;
+}
+
+.plack-black, .plack-black-static{
+	background-color: #000;
+	color: #fff;	
+	border: 5px solid white;	
+}
+
+.plack-white, .plack-white-static{
+	background-color: #fff;
+	color: #000;	
+	border: 5px solid black;	
+}
+
+.plack-black a{
+	color: #fff;
+}
+
+.plack-white a{
+	color: #000;
+}
+
+.plack-black a, .plack-white a{
+	display: inline-block;
+	width: 100%;
+}
+
+.plack-white:hover a{
+	color: #fff;
+	text-decoration: none;
+}
+
+.plack-black:hover a{
+	color: #000;
+	text-decoration: none;
+}
+
+.plack-white:hover p{
+	background-color: #FFCE2E;
+	color: #000;
+}
+
+.plack-black:hover p{
+	background-color: #FFCE2E;
+	color: #fff;
+}
+
+.plack-black:hover, .plack-white:hover{
+	background-color: #FFCE2E;
+}
+.centered{
+	text-align: center;
+	margin: 0 auto;
+	display: block;
+}
+
+.center-flex{
+	display: -webkit-flex;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+   -webkit-align-items: center;
+   align-items: center;
+ }
+
+.link{
+	border-bottom: 2px solid #FFCE2E;
+
+}
+
+.legend-header{
+	font-size: 2em;
+	margin: 10px;
+}
