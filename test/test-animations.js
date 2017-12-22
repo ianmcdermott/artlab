@@ -1,3 +1,4 @@
+'use strict'
 const chai = require('chai');
 chai.use(require('chai-datetime'));
 const chaiHttp = require('chai-http');
@@ -42,8 +43,8 @@ function tearDownDB(){
 	return new Promise(function(resolve, reject){
 		console.warn('Deleting database');
 		mongoose.connection.dropDatabase()
-			.then(function(result){resolve(result)})
-			.catch(function(err){reject(err)})
+			// .then(function(result){resolve(result)})
+			// .catch(function(err){reject(err)})
 	});
 }
 
