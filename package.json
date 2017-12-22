@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ianmcdermott/art-app.git"
+    "url": "git+https://github.com/ianmcdermott/artlab.git"
   },
   "author": "Ian McDermott",
   "license": "ISC",
