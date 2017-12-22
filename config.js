@@ -8,5 +8,4 @@ exports.DATABASE_URL =
 	exports.JWT_EXPIRY = process.env.JWT_EXPIRY || '7d';
 
 exports.TEST_DATABASE_URL = (
-	process.env.TEST_DATABASE_URL ||
-	'mongodb://localhost/artapp');
+	process.env.TEST_DATABASE_URL );
