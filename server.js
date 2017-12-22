@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const {router: usersRouter} = require('./users');
 const {router: authRouter, localStrategy, jwtStrategy} = require('./auth');
@@ -17,6 +18,7 @@ mongoose.Promise = global.Promise;
 const {PORT, DATABASE_URL} = require('./config');
 
 const app = express();
+app.use(bodyParser.json());
 
 app.use(express.static('public'));
 
@@ -66,7 +68,7 @@ function runServer(databaseUrl = DATABASE_URL, port = PORT) {
       }
       server = app
         .listen(port, () => {
-          console.log(`Your app is listening on port ${PORT}`);
+          console.log(`Your app is listening on port ${port}`);
            resolve();
         })
         .on('error', err => {
