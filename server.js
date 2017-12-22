@@ -62,14 +62,14 @@ let server;
 
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
-    mongoose.createConnection(databaseUrl, { useMongoClient: true }, err => {
+    mongoose.connect(DATABASE_URL, { useMongoClient: true }, err => {
       if (err) {
         return reject(err);
       }
       server = app
-        .listen(port, () => {
-          console.log(`Your app is listening on port ${port}`);
-           resolve();
+        .listen(PORT, () => {
+          console.log(`Your app is listening on port ${PORT}`);
+          resolve();
         })
         .on('error', err => {
           mongoose.disconnect();
