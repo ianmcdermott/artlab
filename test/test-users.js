@@ -5,8 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const {app, runServer, closeServer} = require('../server');
 const {User} = require('../users');
-const {JWT_SECRET, DATABASE_URL} = require('../config');
-const {TEST_DATABASE_URL} = require('../config');
+const {JWT_SECRET, DATABASE_URL, TEST_DATABASE_URL} = require('../config');
 
 global.DATABASE_URL = DATABASE_URL;
 
