@@ -78,7 +78,7 @@ function seedAnimationData(){
 describe('Animations API resource', function(){
 
 	before(function(){
-		console.log('running server ' + TEST_DATABASE_URL)
+		if(TEST_DATABASE_URL) console.log('running server');
 		return runServer(TEST_DATABASE_URL);
 	});
 
