@@ -1,4 +1,4 @@
-// global.DATABASE_URL = config.DATABASE_URL;
+'use strict'
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const jwt = require('jsonwebtoken');
@@ -24,21 +24,22 @@ describe('/api/users', function(){
 	const firstNameB = 'FirstB';
 	const lastNameB = 'LastB'; 
 
-	before(function() {
-	 	return runServer();
+	before(function(){
+		return runServer(TEST_DATABASE_URL);
 	});
 
-	after(function() {
-	    return closeServer();
+	beforeEach(function(){
+		return seedAnimationData();
 	});
 
-	beforeEach(function() {
-
+	afterEach(function(){
+		return tearDownDB();
 	});
 
-	afterEach(function() {
-		return User.remove({});
+	after(function(){
+		return closeServer();
 	});
+
 
 	describe('/api/users', function(){
 		describe('POST', function(){
