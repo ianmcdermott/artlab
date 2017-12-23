@@ -18,7 +18,6 @@ body {
 
 p, h1, h2, h3, h4, h5, h6, a, div{
 	  font-family: 'Muli', sans-serif;
-
 }
 
 header{
@@ -297,4 +296,9 @@ a:hover{
 .legend-header{
 	font-size: 2em;
 	margin: 10px;
+}
+
+
+.square-container{
+	/*border-bottom: 1px solid #000;*/
 }

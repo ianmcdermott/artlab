@@ -40,12 +40,9 @@ function generateToken(){
 }
 
 function tearDownDB(){
-	return new Promise(function(resolve, reject){
-		console.warn('Deleting database');
-		mongoose.connection.dropDatabase()
-			// .then(function(result){resolve(result)})
-			// .catch(function(err){reject(err)})
-	});
+
+    return mongoose.connection.dropDatabase();
+
 }
 
 function seedAnimationData(){
@@ -78,7 +75,7 @@ function seedAnimationData(){
 describe('Animations API resource', function(){
 
 	before(function(){
-		return runServer(TEST_DATABASE_URL, );
+		return runServer(TEST_DATABASE_URL);
 	});
 
 	beforeEach(function(){

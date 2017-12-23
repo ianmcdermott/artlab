@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 
 const {app, runServer, closeServer} = require('../server');
 const {User} = require('../users');
-const {JWT_SECRET, DATABASE_URL, TEST_DATABASE_URL} = require('../config');
+const {JWT_SECRET, DATABASE_URL} = require('../config');
+const {TEST_DATABASE_URL} = require('../config');
 
 global.DATABASE_URL = DATABASE_URL;
 
@@ -23,22 +24,21 @@ describe('/api/users', function(){
 	const firstNameB = 'FirstB';
 	const lastNameB = 'LastB'; 
 
-	before(function(){
-		return runServer(TEST_DATABASE_URL);
+	before(function() {
+	 	return runServer();
 	});
 
-	beforeEach(function(){
-		return seedAnimationData();
+	after(function() {
+	    return closeServer();
 	});
 
-	afterEach(function(){
-		return tearDownDB();
+	beforeEach(function() {
+
 	});
 
-	after(function(){
-		return closeServer();
+	afterEach(function() {
+		return User.remove({});
 	});
-
 
 	describe('/api/users', function(){
 		describe('POST', function(){

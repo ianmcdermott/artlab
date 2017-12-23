@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Gallery</title>
+	<title>Artlab Gallery</title>
 
 	<script src="libraries/p5.js"></script>
 	<script src="libraries/p5.dom.js"></script>
@@ -26,23 +26,25 @@
 </head>
 <body onload="renderGallery();">
 	<div id="wrapper" >
-		<header role="banner"><image src="media/agnosia_logo.png" alt="agnosia logo"></header>
+		<header role="banner"><image src="media/artlab_logo.png" alt="artlab logo"></header>
 		<main role="main">
-		<a id="dashboard-link" href="dashboard.html">User Dashboard</a>
+			<a id="dashboard-link" href="dashboard.html">User Dashboard</a>
 			<a id="settings-link" href="settings.html">User Settings</a>
-			<div class="square1">
-				<div id="js-artwork-thumb"></div>
-				<div class="plack-white-static">
-					<div id="js-artwork-info"></div>
+			<div class="square-container">
+				<div class="square1">
+					<div id="js-artwork-thumb"></div>
+					<div class="plack-white-static">
+						<div id="js-artwork-info"></div>
+					</div>
 				</div>
-			</div>
-			<div class="square2" >
-				<div id="js-theatre-thumb"></div>
-				<div class="plack-black-static">
-					<div id="js-animation-info"></div>
+				<div class="square2" >
+					<div id="js-theatre-thumb"></div>
+					<div class="plack-black-static">
+						<div id="js-animation-info"></div>
+					</div>
+					</div>
 				</div>
-				</div>
-			</div>
+		</main>
 		</main>
 		<footer role="contentinfo">
 			<a href="showcase.html">Showcase</a>

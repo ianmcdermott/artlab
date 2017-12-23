@@ -25,7 +25,7 @@ const userdrawnSchema = mongoose.Schema({
     animationId: {type: String},
     artist: {type: String, required: true},
     creationDate: {type: Date, required: true},
-    userId: {type: mongoose.Schema.Types.ObjectId, required: true}
+    userId: {type: String, required: true}
 });
 
 // when creating video player, may want virtual that will allow the arrays to add all content together? 
