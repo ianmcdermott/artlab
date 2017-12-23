@@ -7,3 +7,5 @@ deploy:
   app: radiant-scrubland
   on:
     repo: ianmcdermott/art-app
+services: 
+- mongodb

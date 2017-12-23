@@ -446,7 +446,7 @@ function renderShowcase(){
 	console.log('renderShowcase ran');
 	retrieveLocalStorage();
 	getAndRenderAnimationInfo();
-	getAndRenderAnimation(testAnimationId);
+	getAndRenderAnimation(animationId);
 }
 
 function getAndRenderAnimationInfo(){
@@ -461,7 +461,7 @@ function getAndRenderAnimationInfo(){
 function getAnimationInfoById(callback){
 	console.log('getAnimationInfoById ran')
 	const settings = {
-		url:  DATABASE_URL+`animations/	`+testAnimationId,
+		url:  DATABASE_URL+`animations/	`+animationId,
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 		},
@@ -472,7 +472,8 @@ function getAnimationInfoById(callback){
 }
 
 function renderAnimationInfo(data){
-	let lastDD = data.lastDrawnDate;
+	let day = data.lastDrawnDate;
+	let lastDD = day.toLocaleDateString('%A, %B %e, %Y');	
 	$('#js-animation-info').html(`
 		<p>${data.title}</p>
 		<p>Last frame drawn on: ${lastDD}</p>`);
@@ -520,7 +521,6 @@ function gatherArtistInfo(data){
 	userProfileId = data.id;
 	localStorage.userProfileId = data.id;
 	localStorage.artist = data.name;
-
 	console.log('gatherArtistInfo running'+data.id);
 	$.extend(userArtworkObject, {
 		id: data.id,
@@ -577,7 +577,7 @@ function extendUserArtworkObject(data){
 	let r = Math.floor(Math.random(data.animations.length));
 	animationId = data.animations[r].id;
 	frameNumber = data.animations[r].frameCount;
-
+	localStorage.animationId = animationId;
 	$.extend(userArtworkObject, {
 	   animationId: animationId,
 	   frameCount: frameNumber
@@ -643,15 +643,15 @@ function putArtworkUserProfile(callback, userID, artworkTitle, animationId){
 }
 
 //PUT new art on animation to update image for thumbnail display purposes
-function putArtworkAnimations(callback, animationId){
+function putArtworkAnimations(){
 	console.log('putArtwork ran');	
 	const settings = {
 		url: DATABASE_URL + 'animations/' + animationId,
 		method: 'PUT',
 			data: JSON.stringify({
-				"id": userID,
 				"frameCount": frameNumber,
-				"frame": drawing
+				"lastFrame": drawing,
+				"lastDrawnDate": Date()
 			}),
 			dataType: 'json',
 			headers: {
@@ -659,12 +659,12 @@ function putArtworkAnimations(callback, animationId){
 				'Content-Type': 'application/json'
 			},
 			success: function(){
-				callback;
+				//callback;
+				return;
 			},
 			error: console.error('PUT Animation drawing error')		
 	};
 	$.ajax(settings);
-		return false;
 
 }
 
@@ -756,6 +756,7 @@ function retrieveLocalStorage(){
 	userEndpointId = localStorage.getItem('userEndpointId');
 	userProfileId = localStorage.getItem('userProfileId');
 	artist = localStorage.getItem('artist');
+	animationId = localStorage.getItem('animationId');
 }
 
 function retrieveUsernameFromLocalStorage(){
@@ -772,7 +773,7 @@ function submitArtwork(){
 	$('#js-artwork-form').submit(function(event){
 		event.preventDefault();
 		createUserdrawnObject();
-	
+		//putArtworkAnimations()
 		updateAnimationObject(userArtworkObject.animationId, (Number(userArtworkObject.frameCount)+1));
 
 		//get artwork object in userprofile, append, and put back in 
@@ -980,8 +981,8 @@ function updateAnimationObject(animationId, frameNumber){
 			data: JSON.stringify({
 				"id": animationId,
 				"frameCount": frameNumber,
-				"frame": drawing
-
+				"lastFrame": drawing,
+				"lastDrawnDate": Date()
 			}),
 			dataType: 'json',
 			headers: {

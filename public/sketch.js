@@ -136,11 +136,13 @@ function frame(){
 }
 
 function mouseDragged() {
-	isDrawing = true;
-	releasedMouse = false;
-	brush.drag(mouseX, mouseY);
-	displayOn = false;
-	return false;
+	if(mouseX > 100 && mouseX < 900 && mouseY > 100 && mouseY < 900){
+		isDrawing = true;
+		releasedMouse = false;
+		brush.drag(mouseX, mouseY);
+		displayOn = false;
+		return false;
+	}
 }
 
 function mouseReleased(){
@@ -200,7 +202,7 @@ function ColorSwatch(_x, _y, _r, _c){
 		//if mouse is inside swatch, update brush and fill icon
 			if(d < this.r){
 				fillIcon.c = this.c;
-				brush.updateColor(this.c);
+			//	brush.updateColor(this.c);
 
 		}
 	}
