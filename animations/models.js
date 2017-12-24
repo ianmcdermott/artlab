@@ -1,23 +1,35 @@
 'use strict'
 const mongoose = require('mongoose');
 
+const linesSubSchema = mongoose.Schema(
+{
+   mouseX: Number, 
+   mouseY: Number, 
+   pmouseX: Number, 
+   pmouseY: Number
+},
+{_id: false});
+
+const pointsSubSchema = mongoose.Schema(
+          { 
+            x: Number,
+            y: Number
+          },
+            {_id: false}
+);
+
+const lastFrameSubSchema = mongoose.Schema({
+        color: String,
+        lines: [linesSubSchema],
+        points: [pointsSubSchema],
+        radius: Number
+    
+  },{_id: false});
+
 const animationSchema = mongoose.Schema({
     title: {type: String, required: true},
     lastDrawnDate: {type: Date, required: true},
-    lastFrame: [{
-        color: String,
-        lines: [{
-          mouseX: Number, 
-          mouseY: Number, 
-          pmouseX: Number, 
-          pmouseY: Number
-        }],
-        points: [{
-          x: Number,
-          y: Number
-        }],
-        radius: Number
-    }],
+    lastFrame: lastFrameSubSchema,
     frameCount: {type: Number, required: true}
 });
 
@@ -25,6 +37,7 @@ const animationSchema = mongoose.Schema({
 animationSchema.virtual('formatDate').get(function(){
 
 })
+
 
 animationSchema.methods.apiRepr = function(){
   return {

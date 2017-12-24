@@ -1,7 +1,10 @@
 'use strict'
 const chai = require('chai');
 chai.use(require('chai-datetime'));
+chai.use(require('chai-moment'));
+
 const chaiHttp = require('chai-http');
+
 const faker = require('faker');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -38,6 +41,43 @@ function generateToken(){
 	return token;
 }
 
+function generateUserdrawnData(){
+	return {
+			frameNumber: faker.random.number(100),
+  			frame: generateFrameData(),
+			title: faker.company.bsNoun(),
+			animationId: faker.random.alphaNumeric(24),
+			artist: faker.company.bsNoun(),
+		    creationDate: faker.date.recent(),
+		    userId: faker.random.alphaNumeric(24)
+	}
+}
+
+function generateFrameData(){
+	return {
+	 	 color: faker.internet.color(),
+		 lines: [generateLineData()],
+		 points: [generatePointsData()],
+		 radius: faker.random.number(100)
+	}
+}
+
+function generateLineData(){
+	return {
+		   mouseX: faker.random.number(1000), 
+		   mouseY: faker.random.number(1000), 
+		   pmouseX: faker.random.number(1000), 
+		   pmouseY: faker.random.number(1000)
+		 }
+}
+
+function generatePointsData(){
+	return {
+		   x: faker.random.number(1000),
+		   y: faker.random.number(1000)
+		 }
+}
+
 function tearDownDB(){
 	return mongoose.connection.dropDatabase()
 }
@@ -47,29 +87,7 @@ function seedUserdrawnData(){
 	const seedData = [];
 
 	for(let i=1; i<= 10; i++){
-		seedData.push({
-			id: faker.random.alphaNumeric(24),
-			frameNumber: faker.random.number(100),
-  			frame: [{
-  				color: faker.internet.color(),
-		        lines: [{
-		          mouseX: faker.random.number(1000), 
-		          mouseY: faker.random.number(1000), 
-		          pmouseX: faker.random.number(1000), 
-		          pmouseY: faker.random.number(1000)
-		        }],
-		        points: [{
-		          x: faker.random.number(1000),
-		          y: faker.random.number(1000)
-		        }],
-		        radius: faker.random.number(100)
-		    }],
-			title: faker.company.bsNoun(),
-			animationId: faker.random.alphaNumeric(24),
-			artist: faker.company.bsNoun(),
-		    creationDate: faker.date.recent(),
-		    userId: faker.random.alphaNumeric(24)
-		});
+		seedData.push(generateUserdrawnData());
 	}
 	return UserDrawn.insertMany(seedData);
 }
@@ -125,10 +143,10 @@ describe('Userdrawn API resource', function(){
 					res.body.userdrawn.should.be.a('array');
 					res.body.userdrawn.should.have.length.of.at.least(1);
 					res.body.userdrawn.forEach(function(userdrawn){
-						userdrawn.should.a('object');
+						userdrawn.should.be.a('object');
 						userdrawn.should.include.keys('id', 'frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'userId');
 						userdrawn.frameNumber.should.be.a('number');
-						userdrawn.frame.should.be.a('array');
+						userdrawn.frame.should.be.a('object');
 						userdrawn.title.should.be.a('string');
 						userdrawn.animationId.should.be.a('string');
 						userdrawn.artist.should.be.a('string');
@@ -142,12 +160,12 @@ describe('Userdrawn API resource', function(){
 				})
 				.then(function(userdrawn){
 					resUserdrawn.frameNumber.should.equal(userdrawn.frameNumber);	
-				//	resUserdrawn.frame.should.equal(userdrawn.frame);		
+					// resUserdrawn.frame.should.equal(userdrawn.frame);		
 					resUserdrawn.title.should.equal(userdrawn.title);		
 					resUserdrawn.animationId.should.equal(userdrawn.animationId);		
 					resUserdrawn.artist.should.equal(userdrawn.artist);		
-				//	resUserdrawn.creationDate.should.equal(userdrawn.creationDate);		
-				//	resUserdrawn.userId.should.equal(userdrawn.userId);		
+					resUserdrawn.creationDate.should.be.sameMoment(userdrawn.creationDate);		
+					resUserdrawn.userId.should.equal(userdrawn.userId);		
 				});
 		});
 	});
@@ -156,29 +174,7 @@ describe('Userdrawn API resource', function(){
 		
 		it('Should add a new userdrawn', function(){
 			const token = generateToken();
-			const newUserdrawn = {
-				id: faker.random.alphaNumeric(24),
-				frameNumber: faker.random.number(100),
-	  			frame: [{
-	  				color: faker.internet.color(),
-			        lines: [{
-			          mouseX: faker.random.number(1000), 
-			          mouseY: faker.random.number(1000), 
-			          pmouseX: faker.random.number(1000), 
-			          pmouseY: faker.random.number(1000)
-			        }],
-			        points: [{
-			          x: faker.random.number(1000),
-			          y: faker.random.number(1000)
-			        }],
-			        radius: faker.random.number(100)
-			    }],
-				title: faker.company.bsNoun(),
-				animationId: faker.random.alphaNumeric(24),
-				artist: faker.company.bsNoun(),
-			    creationDate: faker.date.recent(),
-			    userId: faker.random.alphaNumeric(24)
-			}
+			const newUserdrawn = generateUserdrawnData();
 
 			return chai.request(app)
 				.post('/userdrawn')
@@ -190,25 +186,24 @@ describe('Userdrawn API resource', function(){
 					res.body.should.be.a('object');
 					res.body.should.include.keys(
 						'id', 'frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'userId');
-					// res.body.id.should.equal(newUserdrawn.id);
 					res.body.frameNumber.should.equal(newUserdrawn.frameNumber);
-					// res.body.frame.should.equal(newUserdrawn.frame);
+					res.body.frame.should.eql(newUserdrawn.frame);
 					res.body.title.should.equal(newUserdrawn.title);
 					res.body.animationId.should.equal(newUserdrawn.animationId);
 					res.body.artist.should.equal(newUserdrawn.artist);
-					// res.body.creationDate.should.equal(newUserdrawn.creationDate);
+					res.body.creationDate.should.be.sameMoment(newUserdrawn.creationDate);
 					res.body.userId.should.equal(newUserdrawn.userId);
 					res.body.id.should.not.be.null;
 					return UserDrawn.findById(res.body.id);
 				})
 				.then(function(userdrawn) {
-					// userdrawn.frameNumber.should.equal(userdrawn.frameNumber);	
-					// userdrawn.frame.should.equal(userdrawn.frame);		
-					userdrawn.title.should.equal(userdrawn.title);		
-					userdrawn.animationId.should.equal(userdrawn.animationId);		
-					userdrawn.artist.should.equal(userdrawn.artist);		
-					// userdrawn.creationDate.should.equal(userdrawn.creationDate);		
-					userdrawn.userId.should.equal(userdrawn.userId);		
+					userdrawn.frameNumber.should.equal(newUserdrawn.frameNumber);	
+					// userdrawn.frame.should.eql(newUserdrawn.frame);		
+					userdrawn.title.should.equal(newUserdrawn.title);		
+					userdrawn.animationId.should.equal(newUserdrawn.animationId);		
+					userdrawn.artist.should.equal(newUserdrawn.artist);		
+					userdrawn.creationDate.should.be.sameMoment(newUserdrawn.creationDate);		
+					userdrawn.userId.should.equal(newUserdrawn.userId);		
 				});
 		});
 	});
@@ -218,30 +213,7 @@ describe('Userdrawn API resource', function(){
 		let resUserdrawn;
 
 		it('should update fields with new data', function(){
-			const update = {
-				id: faker.random.alphaNumeric(24),
-				frameNumber: faker.random.number(100),
-	  			frame: [{
-	  				color: faker.internet.color(),
-			        lines: [{
-			          mouseX: faker.random.number(1000), 
-			          mouseY: faker.random.number(1000), 
-			          pmouseX: faker.random.number(1000), 
-			          pmouseY: faker.random.number(1000)
-			        }],
-			        points: [{
-			          x: faker.random.number(1000),
-			          y: faker.random.number(1000)
-			        }],
-			        radius: faker.random.number(100)
-			    }],
-				title: faker.company.bsNoun(),
-				animationId: faker.random.alphaNumeric(24),
-				artist: faker.company.bsNoun(),
-			    creationDate: faker.date.recent(),
-			    userId: faker.random.alphaNumeric(24)
-			}
-
+			const update = generateUserdrawnData();
 			return UserDrawn
 				.findOne()
 				.then(function(userdrawn){
@@ -258,13 +230,17 @@ describe('Userdrawn API resource', function(){
 					return UserDrawn.findById(update.id);
 				})
 				.then(function(userdrawn){
-					userdrawn.frameNumber.should.equal(userdrawn.frameNumber);	
-					userdrawn.frame.should.equal(userdrawn.frame);		
-					userdrawn.title.should.equal(userdrawn.title);		
-					userdrawn.animationId.should.equal(userdrawn.animationId);		
-					userdrawn.artist.should.equal(userdrawn.artist);		
-					userdrawn.creationDate.should.equal(userdrawn.creationDate);		
-					userdrawn.userId.should.equal(userdrawn.userId);		
+					console.log('update frame is '+JSON.stringify(update.frame));
+					console.log('userdrawn frame is '+JSON.stringify(userdrawn.frame));
+
+					userdrawn.frameNumber.should.equal(update.frameNumber);	
+					userdrawn.frame.color.should.equal(update.frame.color);		
+					userdrawn.frame.radius.should.equal(update.frame.radius);		
+					userdrawn.title.should.equal(update.title);		
+					userdrawn.animationId.should.equal(update.animationId);		
+					userdrawn.artist.should.equal(update.artist);		
+					userdrawn.creationDate.should.be.sameMoment(update.creationDate);		
+					userdrawn.userId.should.equal(update.userId);		
 		});
 	});
 

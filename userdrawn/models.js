@@ -5,27 +5,39 @@ function StorageException(message) {
    this.name = "StorageException";
 }
 
-const userdrawnSchema = mongoose.Schema({
-  frameNumber: { type: Number, index: true},
-  frame: [{
-          color: String,
-          lines: [{
-            mouseX: Number, 
-            mouseY: Number, 
-            pmouseX: Number, 
-            pmouseY: Number
-          }],
-          points: [{
+const linesSubSchema = mongoose.Schema(
+{
+   mouseX: Number, 
+   mouseY: Number, 
+   pmouseX: Number, 
+   pmouseY: Number
+},
+{_id: false});
+
+const pointsSubSchema = mongoose.Schema(
+          { 
             x: Number,
             y: Number
-          }],
-          radius: Number
-      }],
-    title: {type: String},
-    animationId: {type: String},
-    artist: {type: String, required: true},
-    creationDate: {type: Date, required: true},
-    userId: {type: String, required: true}
+          },
+            {_id: false}
+);
+
+const frameSubSchema = mongoose.Schema({
+        color: String,
+        lines: [linesSubSchema],
+        points: [pointsSubSchema],
+        radius: Number
+    
+  },{_id: false});
+
+const userdrawnSchema = mongoose.Schema({
+  frameNumber: { type: Number, index: true},
+  frame: frameSubSchema,
+  title: {type: String},
+  animationId: {type: String},
+  artist: {type: String, required: true},
+  creationDate: {type: Date, required: true},
+  userId: {type: String, required: true}
 });
 
 // when creating video player, may want virtual that will allow the arrays to add all content together? 

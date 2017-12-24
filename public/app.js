@@ -452,8 +452,6 @@ function renderShowcase(){
 function getAndRenderAnimationInfo(){
 	console.log('getAndRenderAnimationInfo ran')
 	getAnimationInfoById(renderAnimationInfo);	
-	// $('body').append(`<script src="sketch.js"></script>`);
- // 	new p5(theatre, "js-theatre-holder"); 
 }
 
 
@@ -472,11 +470,10 @@ function getAnimationInfoById(callback){
 }
 
 function renderAnimationInfo(data){
-	let day = data.lastDrawnDate;
-	let lastDD = day.toLocaleDateString('%A, %B %e, %Y');	
+	let lastDD = new Date(data.lastDrawnDate).toDateString();
 	$('#js-animation-info').html(`
 		<p>${data.title}</p>
-		<p>Last frame drawn on: ${lastDD}</p>`);
+		<p>Last frame drawn on:</p><p>${lastDD}</p>`);
 }
 
 

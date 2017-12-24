@@ -1,15 +1,14 @@
 'use strict'
 const chai = require('chai');
 chai.use(require('chai-datetime'));
+chai.use(require('chai-moment'));
 const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-// const {JWT_SECRET} = require('../config');
 
 const {app, runServer, closeServer} = require('../server');
 
-//const expect = chai.expect;
 const should = chai.should();
 
 const {Animations} = require('../animations/models');
@@ -39,35 +38,42 @@ function generateToken(){
 	return token;
 }
 
+function generateAnimationData(){
+	return {
+		title: faker.name.firstName(),
+	    lastDrawnDate: faker.date.recent(),
+	  	lastFrame: generateLastFrameData(),
+	    frameCount: faker.random.number(100)
+	}
+}
+
+//creates fake frame data
+function generateLastFrameData(){
+	return {
+	 	 color: faker.internet.color(),
+		 lines: [{
+		   mouseX: faker.random.number(1000), 
+		   mouseY: faker.random.number(1000), 
+		   pmouseX: faker.random.number(1000), 
+		   pmouseY: faker.random.number(1000)
+		 }],
+		 points: [{
+		   x: faker.random.number(1000),
+		   y: faker.random.number(1000)
+		 }],
+		 radius: faker.random.number(100)
+	}
+}
+
 function tearDownDB(){
-
     return mongoose.connection.dropDatabase();
-
 }
 
 function seedAnimationData(){
 	console.info('Seeding database');
 	const seedData = [];
 	for(let i=1; i<= 10; i++){
-		seedData.push({
-			title: faker.name.firstName(),
-		    lastDrawnDate: faker.date.past(),
-  			lastFrame: [{
-  				color: faker.internet.color(),
-		        lines: [{
-		          mouseX: faker.random.number(1000), 
-		          mouseY: faker.random.number(1000), 
-		          pmouseX: faker.random.number(1000), 
-		          pmouseY: faker.random.number(1000)
-		        }],
-		        points: [{
-		          x: faker.random.number(1000),
-		          y: faker.random.number(1000)
-		        }],
-		        radius: faker.random.number(100)
-		    }],
-		    frameCount: faker.random.number(100)
-		});
+		seedData.push(generateAnimationData());
 	}
 	return Animations.insertMany(seedData);
 }
@@ -132,8 +138,9 @@ describe('Animations API resource', function(){
 				})
 				.then(function(animation) {
 					resAnimation.title.should.equal(animation.title);
-				//	resAnimation.lastDrawnDate.should.equalDate(animation.lastDrawnDate);
-				//	resAnimation.lastFrame.should.equal(animation.lastFrame);
+					resAnimation.lastDrawnDate.should.be.sameMoment(animation.lastDrawnDate);
+					resAnimation.lastFrame.color.should.equal(animation.lastFrame.color);
+					resAnimation.lastFrame.radius.should.equal(animation.lastFrame.radius);
 					resAnimation.frameCount.should.equal(animation.frameCount);
 				});
 		});
@@ -143,25 +150,7 @@ describe('Animations API resource', function(){
 		it('Should add a new animation', function(){
 			const token = generateToken();
 
-			const newAnimation = {
-				title: faker.name.firstName(),
-			    lastDrawnDate: faker.date.past(),
-	  			lastFrame: [{
-	  				color: faker.internet.color(),
-			        lines: [{
-			          mouseX: faker.random.number(1000), 
-			          mouseY: faker.random.number(1000), 
-			          pmouseX: faker.random.number(1000), 
-			          pmouseY: faker.random.number(1000)
-			        }],
-			        points: [{
-			          x: faker.random.number(1000),
-			          y: faker.random.number(1000)
-			        }],
-			        radius: faker.random.number(100)
-			    }],
-			    frameCount: faker.random.number(100)
-			}
+			const newAnimation = generateAnimationData();
 
 			return chai.request(app)
 				.post('/animations')
@@ -174,17 +163,17 @@ describe('Animations API resource', function(){
 					res.body.should.include.keys(
 						'id', 'title', 'lastDrawnDate', 'lastFrame', 'frameCount');
 					res.body.title.should.equal(newAnimation.title);
-				//	res.body.lastDrawnDate.should.equalDate(newAnimation.lastDrawnDate);
-					//res.body.lastFrame.should.equal(newAnimation.lastFrame);
+					res.body.lastDrawnDate.should.be.sameMoment(newAnimation.lastDrawnDate);
+					res.body.lastFrame.should.eql(newAnimation.lastFrame);
 					res.body.frameCount.should.equal(newAnimation.frameCount);
-
 					res.body.id.should.not.be.null;
 					return Animations.findById(res.body.id);
 				})
 				.then(function(animation) {
 					animation.title.should.equal(newAnimation.title);
-				//	animation.lastDrawnDate.should.equalDate(newAnimate.lastDrawnDate);
-					//animation.lastFrame.should.equal(newAnimation.lastFrame);
+					animation.lastDrawnDate.should.be.sameMoment(newAnimation.lastDrawnDate);
+					animation.lastFrame.radius.should.equal(newAnimation.lastFrame.radius);
+					animation.lastFrame.color.should.equal(newAnimation.lastFrame.color);
 					animation.frameCount.should.equal(newAnimation.frameCount);
 				});
 		});
@@ -192,26 +181,8 @@ describe('Animations API resource', function(){
 
 	describe('PUT endpoint', function(){
 		it('should update fields with new data', function(){
-			const update = {
-				title: faker.name.firstName(),
-			    lastDrawnDate: faker.date.past(),
-	  			lastFrame: [{
-	  				color: faker.internet.color(),
-			        lines: [{
-			          mouseX: faker.random.number(1000), 
-			          mouseY: faker.random.number(1000), 
-			          pmouseX: faker.random.number(1000), 
-			          pmouseY: faker.random.number(1000)
-			        }],
-			        points: [{
-			          x: faker.random.number(1000),
-			          y: faker.random.number(1000)
-			        }],
-			        radius: faker.random.number(100)
-			    }],
-			    frameCount: faker.random.number(100)
-			};
-
+			const update = generateAnimationData();
+			console.log('u is '+JSON.stringify(update));
 			const token = generateToken();
 
 			return Animations
@@ -232,7 +203,7 @@ describe('Animations API resource', function(){
 				.then(function(animation){
 					animation.title.should.equal(update.title);
 					animation.lastDrawnDate.should.equalDate(update.lastDrawnDate);
-				//	animation.lastFrame.should.equal(update.lastFrame);
+			     	// animation.lastFrame.should.eql(update.lastFrame);
 					animation.frameCount.should.equal(update.frameCount);
 
 				});
