@@ -24,20 +24,18 @@ describe('/api/users', function(){
 	const lastNameB = 'LastB'; 
 
 	before(function() {
-	 	return runServer();
-	});
+  		return runServer(TEST_DATABASE_URL);
+ 	});
 
-	after(function() {
-	    return closeServer();
-	});
+ 	after(function() {
+   		return closeServer();
+  	});
 
-	beforeEach(function() {
+  	beforeEach(function() {});
 
-	});
-
-	afterEach(function() {
-		return User.remove({});
-	});
+  	afterEach(function() {
+   		return User.remove({});
+  	});
 
 	describe('/api/users', function(){
 		describe('POST', function(){

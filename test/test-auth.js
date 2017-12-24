@@ -19,7 +19,7 @@ describe('Auth endpoints', function(){
 	const lastName = 'Last';
 
 	before(function(){
-		return runServer();
+		return runServer(TEST_DATABASE_URL);
 	});
 
 	after(function(){
