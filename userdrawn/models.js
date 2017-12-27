@@ -12,7 +12,8 @@ const linesSubSchema = mongoose.Schema(
    pmouseX: Number, 
    pmouseY: Number
 },
-{_id: false});
+  {_id: false}
+);
 
 const pointsSubSchema = mongoose.Schema(
           { 
@@ -32,17 +33,18 @@ const frameSubSchema = mongoose.Schema({
 
 const userdrawnSchema = mongoose.Schema({
   frameNumber: { type: Number, index: true},
-  frame: frameSubSchema,
+  frame: [frameSubSchema],
   title: {type: String},
   animationId: {type: String},
   artist: {type: String, required: true},
   creationDate: {type: Date, required: true},
-  userId: {type: String, required: true}
+  artistId: {type: String, required: true}
 });
 
 // when creating video player, may want virtual that will allow the arrays to add all content together? 
 
 userdrawnSchema.methods.apiRepr = function(){
+  console.log('frame is '+this.frame);//JSON.stringify(frameSubSchema));
   return{
     id: this._id,
     frameNumber: this.frameNumber,
@@ -51,7 +53,7 @@ userdrawnSchema.methods.apiRepr = function(){
     animationId: this.animationId,
     artist: this.artist,
     creationDate: this.creationDate,
-    userId: this.userId
+    artistId: this.artistId
   };
 }  
 

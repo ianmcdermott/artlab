@@ -22,7 +22,7 @@ const lastFrameSubSchema = mongoose.Schema({
         color: String,
         lines: [linesSubSchema],
         points: [pointsSubSchema],
-        radius: Number
+        radius: Number,
     
   },{_id: false});
 
@@ -30,7 +30,8 @@ const animationSchema = mongoose.Schema({
     title: {type: String, required: true},
     lastDrawnDate: {type: Date, required: true},
     lastFrame: lastFrameSubSchema,
-    frameCount: {type: Number, required: true}
+    frameCount: {type: Number, required: true},
+    guideUrl: {type: String, required: true}
 });
 
 //virtual for formatted date
@@ -45,7 +46,8 @@ animationSchema.methods.apiRepr = function(){
     title: this.title,
     lastDrawnDate: this.lastDrawnDate,
     lastFrame: this.lastFrame,
-    frameCount: this.frameCount
+    frameCount: this.frameCount,
+    guideUrl: this.guideUrl
   };
 }
 

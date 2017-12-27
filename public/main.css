@@ -29,6 +29,9 @@ header{
 canvas {
 	margin: 0 auto;
 	display: block;
+	width: 100%;
+	height: auto;
+	position: relative;
 }
 
 main{
@@ -72,8 +75,7 @@ a{
 
 a:hover{
 	font-weight: 700;
-		color: #000;
-
+	color: #000;
 }
 
 
@@ -90,11 +92,125 @@ a:hover{
 
 }
 
+
 #js-make-art{
 	display: block;
 	margin: 0 auto;
-	width: 100%;
+	padding: 15px;
+	position: absolute;
+ 	top: 50%;
+ 	left: 50%;
+  	transform: translate(-50%, -50%);
+	transition: all .2s ease-in-out;
+	background-color: #FFCE2E;
+	color: #000;	
+	border: 5px solid black;	
 }
+#js-make-art:hover a{
+	color: #000;
+}
+#js-make-art:hover a{
+	text-decoration: none;
+	font-weight: 600;
+}
+#js-make-art:hover{
+	background-color: #fff;
+	border-color: #FFCE2E;
+	top: 50%;
+ 	left: 50%;
+	-webkit-transform: scale(1.05);
+	transform: translate(-50%, -50%) scale(1.05);
+
+
+}
+#js-make-art:active{
+	background-color: #000;
+	border-color: #fff;
+}
+#js-make-art:active a{
+	color: #FFCE2E;
+}
+/*////*/
+
+#js-blah-art{
+	display: block;
+	margin: 0 auto;
+	padding: 15px;
+	position: absolute;
+ 	top: 50%;
+ 	left: 50%;
+  	transform: translate(-50%, -50%);
+	transition: all .2s ease-in-out;
+	background-color: #000;
+	
+	border: 5px solid black;	
+}
+
+#js-blah-art:hover a{
+	text-decoration: none;
+	font-weight: 600;
+	color: #000;
+	border-color: #fff;
+}
+
+#js-blah-art:hover{
+	background-color: #FFCE2E;
+	top: 50%;
+ 	left: 50%;
+	-webkit-transform: scale(1.05);
+	transform: translate(-50%, -50%) scale(1.05);
+}
+#js-blah-art:active{
+	background-color: #fff;
+	border-color: #FFCE2E;
+}
+#js-blah-art:active a{
+	color: #FFCE2E;
+}
+/*////*/
+
+
+
+#js-view-art{
+	display: block;
+	margin: 0 auto;
+	padding: 15px;
+	position: absolute;
+ 	top: 50%;
+ 	left: 50%;
+  	transform: translate(-50%, -50%);
+	transition: all .2s ease-in-out;
+	background-color: #fff;
+	border: 5px solid #FFCE2E;	
+}
+
+#js-view-art a{
+	color: #000;
+}
+
+#js-view-art:hover a{
+	text-decoration: none;
+	font-weight: 600;
+	color: #FFCE2E;
+}
+
+#js-view-art:hover{
+	top: 50%;
+ 	left: 50%;
+	-webkit-transform: scale(1.05);
+	transform: translate(-50%, -50%) scale(1.05);
+	border-color: #fff;
+	background-color: #000;
+}
+#js-view-art:active{
+	background-color: #FFCE2E;
+}
+#js-view-art:active a{
+	color: #000;
+}
+/*///////*/
+
+
 
 #js-view-art{
 
@@ -139,14 +255,20 @@ a:hover{
 }
 
 
-
 #js-animation-info p{
 	text-align: center;
 }
 
-#js-animation-thumb, #js-artwork-thumb{
-	margin: 10px auto;
-	height: 100%;
+#js-theatre-thumb, #js-artwork-thumb, #js-theatre-holder{
+	padding: 2.5%;
+	width: 100%;
+}
+
+#js-theatre-holder{
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 #js-instructions{
@@ -163,12 +285,13 @@ a:hover{
 	max-width: 20%;
 }
 
-#js-theatre-holder{
-	position: absolute;
+#js-credits-holder{
+	margin: 0 auto;
+	text-align: center;
+	position: relative;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	margin: 10 auto;
 }
 
 #js-artwork-clear{
@@ -202,7 +325,7 @@ a:hover{
 .square2{
 	width: 50%;
 	background-color: #000;
-	border: 10px solid #fff;
+	border: 10px solid #FFCE2E;
 	color: #fff;
 	margin: 0;
 	padding: 10px;
@@ -217,7 +340,7 @@ a:hover{
 	padding: 15px;
 }
 
-.plack-white, .plack-black, .plack-white-static, .plack-black-static{
+.plack-white, .plack-black, .plack-black-static, .plack-white-static{
 	padding: 10px;
 	width: 60%;
 	margin: 0 auto;
@@ -225,10 +348,15 @@ a:hover{
 	display: absolute;
 }
 
+.plack-white, .plack-black{
+		transition: all .2s ease-in-out;
+
+}
+
 .plack-black, .plack-black-static{
 	background-color: #000;
 	color: #fff;	
-	border: 5px solid white;	
+	border: 5px solid #FFCE2E;	
 }
 
 .plack-white, .plack-white-static{
@@ -247,32 +375,67 @@ a:hover{
 
 .plack-black a, .plack-white a{
 	display: inline-block;
+	height: 100%;
 	width: 100%;
 }
 
 .plack-white:hover a{
+	display: inline-block;
 	color: #fff;
+	height: 100%;
+	width: 100%;
+}
+
+.plack-black:hover a{
+	display: inline-block;
+	color: #000;
+	height: 100%;
+	width: 100%;
+}
+
+.plack-white:hover a, .plack-black:hover a{
 	text-decoration: none;
+	font-weight: 600;
+
+}
+
+
+.plack-white:hover{
+	background-color: #FFCE2E;
+	border-color: #fff;
+	-webkit-transform: scale(1.05);
+	transform: scale(1.05);
+}
+
+.plack-black:active{
+	background-color: #FFCE2E;
+	border-color: #fff;
+}
+
+.plack-black:hover{
+	background-color: #fff;
+	border-color: #000;
+	-webkit-transform: scale(1.05);
+	transform: scale(1.05);
+}
+
+.plack-white:active{
+	background-color: #fff;
+	border-color: #000;
+}
+
+.plack-black:active a, .plack-white:hover a{
+	color: #fff;
 }
 
 .plack-black:hover a{
 	color: #000;
-	text-decoration: none;
 }
 
-.plack-white:hover p{
-	background-color: #FFCE2E;
-	color: #000;
-}
-
-.plack-black:hover p{
-	background-color: #FFCE2E;
+.plack-white:active a{
 	color: #fff;
 }
 
-.plack-black:hover, .plack-white:hover{
-	background-color: #FFCE2E;
-}
 .centered{
 	text-align: center;
 	margin: 0 auto;
@@ -291,6 +454,13 @@ a:hover{
 .link{
 	border-bottom: 2px solid #FFCE2E;
 
+}
+
+.description{
+	width: 80%;
+	font-size: 30px;
+	text-align: center;
+	margin: 0 auto;
 }
 
 .legend-header{

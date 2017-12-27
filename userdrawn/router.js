@@ -29,16 +29,19 @@ router.get('/:id', jwtAuth, (req, res) =>{
 
 router.get('/', jwtAuth, (req, res) => {
 	const filters = {};
-	const queryFields = ["animationId", "userId", "creationDate", "title"];
+	const queryFields = ["animationId", "artistId", "creationDate", "title"];
 	queryFields.forEach(field => {
+		if(field == "artistId") console.log('HI! 	'+field+":"+req.query[field]);
 		if(req.query[field]){
 			filters[field] = req.query[field];
 		}
 	});
+	console.log('filters ar e:'+JSON.stringify(filters));
 	UserDrawn
 		.find(filters)
 		//.limit(10)
 		.then(userdrawn => {
+			console.log("iya"+JSON.stringify(userdrawn));
 			res.json({
 				userdrawn: userdrawn.map(
 					(userdrawn) => userdrawn.apiRepr())
@@ -52,7 +55,7 @@ router.get('/', jwtAuth, (req, res) => {
 });
 
 router.post('/', jwtAuth, (req, res) =>{
-	const requiredFields = ['frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'userId'];
+	const requiredFields = ['frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'artistId'];
 	for(let i=0; i < requiredFields.length; i++){
 		const field = requiredFields[i];
 		if (!(field in req.body)) {
@@ -70,7 +73,7 @@ router.post('/', jwtAuth, (req, res) =>{
 			animationId: req.body.animationId,
 			artist: req.body.artist,
 			creationDate: req.body.creationDate,
-			userId: req.body.userId
+			artistId: req.body.artistId
 		})
 		.then(
 			userdrawn => res.status(201).json(userdrawn.apiRepr()))
@@ -90,7 +93,7 @@ router.put('/:id', jwtAuth, (req, res) => {
 	}
 
 	const toUpdate = {};
-	const updateableFields = ['id', 'frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'userId'];
+	const updateableFields = ['id', 'frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'artistId'];
 
 	updateableFields.forEach(field => {
 		if(field in req.body){

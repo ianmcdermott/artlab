@@ -42,7 +42,7 @@ router.get('/:id', jwtAuth, (req, res) =>{
 });
 
 router.post('/', jwtAuth, (req, res) =>{
-	const requiredFields = ['title', 'lastDrawnDate', 'lastFrame', 'frameCount'];
+	const requiredFields = ['title', 'lastDrawnDate', 'lastFrame', 'frameCount', 'guideUrl'];
 	for(let i=0; i < requiredFields.length; i++){
 		const field = requiredFields[i];
 		if (!(field in req.body)) {
@@ -57,7 +57,8 @@ router.post('/', jwtAuth, (req, res) =>{
 			title: req.body.title,
 			lastDrawnDate: req.body.lastDrawnDate,
 			lastFrame: req.body.lastFrame,
-			frameCount: req.body.frameCount
+			frameCount: req.body.frameCount,
+			guideUrl: req.body.guideUrl
 		})
 		.then(
 			animations => res.status(201).json(animations.apiRepr()))
@@ -77,7 +78,7 @@ router.put('/:id', jwtAuth, (req, res) => {
 	}
 
 	const toUpdate = {};
-	const updateableFields = ['title', 'lastDrawnDate', 'lastFrame', 'frameCount'];
+	const updateableFields = ['title', 'lastDrawnDate', 'lastFrame', 'frameCount', 'guideUrl'];
 
 	updateableFields.forEach(field => {
 		if(field in req.body){

@@ -1,13 +1,13 @@
 
 let x = 0;
 let creamsicle = '#ffb241';
-let mint = '#39b876';
+let sage = '#39b876';
 let magenta = '#e32c7e';
-let colorArray = [creamsicle, mint, magenta];
+let colorArray = [sage, creamsicle, magenta];
 let defaultSwatch = colorArray[0];
 
 let radius = 50;
-let fillColor = mint;
+let fillColor = sage;
 let strokeColor = 255;
 let strokeOn = false;
 let fillOn = true;
@@ -112,7 +112,7 @@ function createPallet(){
 	}
 
 	//strokeIcon = new Str5okeIcon(1125, 30, 40);
-	fillIcon = new FillIcon(1050, 25, 50);
+	fillIcon = new FillIcon(925, 25, 50);
 }
 
 function renderPallet(){
@@ -234,7 +234,6 @@ class StrokeIcon extends Icon{
 
 class FillIcon extends Icon{
 	display(){
-
 		fill(this.c);	
 		noStroke();
 		rect(this.x, this.y, this.r, this.r);

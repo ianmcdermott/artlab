@@ -14,9 +14,9 @@ let imageSketch = function(p){
 			p.frameRate(15);
 	}
 
-	p.windowResized = function(){
-		let w = $("#js-artwork-thumb").width();
-	}
+	 p.windowResized = function(){
+	 	let w = $("#js-artwork-thumb").width();
+	 }
 
 	p.displayDrawing = function(){
 		if(userDrawing){
@@ -65,6 +65,7 @@ let theatre = function(p){
 	let initialRadius = 50; 
 
 	p.preload = function(){
+
 	}
 
 	p.windowResized = function(){
@@ -75,12 +76,12 @@ let theatre = function(p){
 	p.setup = function() {
 			let canvas  = p.createCanvas($("#js-theatre-holder").width(), $("#js-theatre-holder").width());
 			canvas.parent('#js-theatre-holder');
-			p.frameRate(15);
+
+			p.frameRate(12);
 
 	}
 
 	p.draw = function(){
-
 		p.background(50, 800, 210);
 		p.displayDrawing(userTheatre[frameCount].frame);
 		frameCount++;
@@ -127,20 +128,16 @@ let theatre = function(p){
 
 let userArtworkObject = {};
 let frameC;
-let drawing;
+let drawing = [];
 frameC = 0;
 let username;
 let userId;
 
 let AUTHORIZATION_CODE;
+DATABASE_URL = 'http://localhost:8080/';
 
-
-const DATABASE_URL = "http://localhost:8080/";
-
-let GUIDE_URL = 'media/sequences-frames/flowerGuide_';
+let GUIDE_URL;
 const EXTENSION = '.png'
-const testAnimationId = '5a1ee44fc270315d5f98e947';
-let sequenceId = "5a24a1cec270315d5fca2021";
 let userDrawing;
 let userTheatre;
 let userProfileId;
@@ -185,29 +182,26 @@ function displayGuideImage(data){
 
 function prepCanvas(){
 	retrieveLocalStorage();
+	getGuideUrl();
 	// retrieveUserArtworkObject();
-	drawing = [];
-	getRandomAnimation();
+//	drawing = [];
+	//getRandomAnimation();
 	submitArtwork();
 }
 
-function getAndReturnSequenceId(){
-	getSequenceId(returnSequenceId)
+function getGuideUrl(){
+	console.log('getGuideUrl ran');
+	getAnimations(returnRandomGuideUrl);
 }
 
-function getSequenceId(callback){
-	const settings = {
-	 	contentType: "application/json",
-		url:  DATABASE_URL+`sequences`,
-		success: callback,
-		error: callback(null)//"Error getting playlist"
-	};
-	$.ajax(settings);
+function returnRandomGuideUrl(data){
+	let r = Math.floor(Math.random()*data.animations.length)
+	console.log("Rand is "+ data.animations[r].guideUrl);
+	GUIDE_URL =  data.animations[r].guideUrl;
+	extendUserArtworkObject(data, r);
 }
 
-function returnSequenceId(data){
-	return data.sequences[0].id;
-}
+
 
 // *Canvas* GETs image for current guide from "guide image" key's array and displays through p5.js program
 function getGuide(callback){
@@ -268,6 +262,12 @@ function updateUserCredits(data){
 	$('#credits').html;
 }
 
+function renderCredits(data){
+	for(i = 0; i < data.length; i++){
+		console.log(data[i].artist);
+		$("#js-credits-holder").append(`<p>${data[i].artist}</p>`);
+	}
+}
 
 //gets sequence and renders to p5js theatre
 function getSequenceAndRender(){
@@ -331,10 +331,10 @@ function getArtworkByDateAndTitle(callback, _date, _title){
 
 
 function getArtworkByUserId(callback){
-	console.log('getArtworkByUserId ran'+userProfileId);
+	console.log('getArtworkByUserId ran '+userProfileId);
 	const settings = {
 		url:  DATABASE_URL+`userdrawn/`,
-		data: {userId: userProfileId},
+		data: {artistId: userProfileId},
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 		},
@@ -345,7 +345,7 @@ function getArtworkByUserId(callback){
 }
 
 function getArtworkByAnimationId(callback, AID){
-	console.log('getArtworkThumb ran');
+	console.log('getArtworkByAnimationId ran '+DATABASE_URL+`userdrawns/`+AID);
 	const settings = {
 		url:  DATABASE_URL+`userdrawn/`,
 		data: {animationId: AID},
@@ -359,13 +359,13 @@ function getArtworkByAnimationId(callback, AID){
 }
 
 function renderArtworkThumb(data){
-	console.log('renderArtworkThumb ran'+ JSON.stringify(data));
+	let cDate = new Date(data.userdrawn[0].creationDate).toDateString();
+
 	//load user drawing into its own object to be more easily accessible in p5 code
 	$('#js-artwork-info').html(`
 		<p>${data.userdrawn[0].title}</p>
-		<p>Created on: ${data.userdrawn[0].creationDate}</p>`);
-
-	if(data.userdrawn[0]){
+		<p>Created on:</p><p>${cDate}</p>`);
+	if(data.userdrawn){	
 		userDrawing = data.userdrawn[0].frame;
 		new p5(imageSketch, "js-artwork-thumb");
 	} else {
@@ -382,7 +382,9 @@ function getAndRenderAnimationThumb(){
 function renderAnimationThumb(data){
 	console.log('renderAnimationThumb ran');
 	let randomFrame = Math.floor(Math.random()*data.userdrawn.length); 
+
 	userDrawing = data.userdrawn[randomFrame].frame;
+
 	//load user drawing into its own object to be more easily accessible in p5 code
 	new p5(imageSketch, "js-theatre-thumb");
 }
@@ -390,6 +392,7 @@ function renderAnimationThumb(data){
 
 
 function getAndRenderAnimation(chosenAnimation){
+	console.log("getAndRenderAnimation ran")
 	getArtworkByAnimationId(renderAnimation, chosenAnimation);
 }
 
@@ -404,15 +407,9 @@ function sortByFrameNumber(a,b) {
 
 //renders animation using data from userdrawn endpoint
 function renderAnimation(data){
-	console.log('renderAnimationThumb ran');
-	
 	userTheatre = data.userdrawn.sort(sortByFrameNumber);
-	console.log("U Theatre is "+JSON.stringify(userTheatre));
-	//load user drawing into its own object to be more easily accessible in p5 code
-	new p5(theatre);
-	$('#js-theatre-holder').prepend(
-			`<div class="js-theatre-holder"></div>
-	`);	
+	new p5(theatre, "js-theatre-holder");
+	renderCredits(userTheatre);
 }
 
 
@@ -445,8 +442,8 @@ function renderArtworkInfo(data){
 function renderShowcase(){
 	console.log('renderShowcase ran');
 	retrieveLocalStorage();
-	getAndRenderAnimationInfo();
 	getAndRenderAnimation(animationId);
+	getAndRenderAnimationInfo();
 }
 
 function getAndRenderAnimationInfo(){
@@ -470,10 +467,13 @@ function getAnimationInfoById(callback){
 }
 
 function renderAnimationInfo(data){
+	console.log('renderAnimationInfo ran')
 	let lastDD = new Date(data.lastDrawnDate).toDateString();
-	$('#js-animation-info').html(`
-		<p>${data.title}</p>
-		<p>Last frame drawn on:</p><p>${lastDD}</p>`);
+	$('.plack-black-static').append(`
+		<div id="js-animation-info">
+			<p>${data.title}</p>
+			<p>Last frame drawn on:</p><p>${lastDD}</p>
+		</div>`);
 }
 
 
@@ -560,18 +560,17 @@ function gatherAnimationInfo(data){
 		lastFrame: data.animations[0].lastFrame,
 	});
 
-	getRandomAnimation();
+	//getRandomAnimation();
 		
 }
 
-function getRandomAnimation(){ 
-	console.log("getRandomAnimation ran");
-	getAnimations(extendUserArtworkObject);
-}
+// function getRandomAnimation(){ 
+// 	console.log("getRandomAnimation ran");
+// 	getAnimations(extendUserArtworkObject);
+// }
 
-function extendUserArtworkObject(data){
+function extendUserArtworkObject(data, r){
 	console.log("extendUserArtworkObject ran");
-	let r = Math.floor(Math.random(data.animations.length));
 	animationId = data.animations[r].id;
 	frameNumber = data.animations[r].frameCount;
 	localStorage.animationId = animationId;
@@ -612,7 +611,7 @@ function renderUserInfo(data){
 
 //PUT new art on user profile to update image for thumbnail display purposes
 function putArtworkUserProfile(callback, userID, artworkTitle, animationId){
-	console.log('putArtwork ran');	
+	console.log('putArtwork ran' + drawing);	
 	const settings = {
 		url: DATABASE_URL + 'userprofile/' + userID,
 		method: 'PUT',
@@ -633,7 +632,7 @@ function putArtworkUserProfile(callback, userID, artworkTitle, animationId){
 			success: function(){
 				callback;
 			},
-			error: console.error('PUT drawing error')		
+			error: console.error('PUT drawing error'+JSON.stringify(drawing))		
 	};
 	$.ajax(settings);
 	return false;
@@ -695,12 +694,10 @@ function postArtworkSequences(callback, userID, artworkTitle, animationId){
 	return false;
 }
 
-
-
 function renderGalleryAndShowcase(){
 	retrieveLocalStorage();
 	getAndRenderArtworkThumb();
-	getAndRenderAnimationThumb();
+    getAndRenderAnimationThumb();
 }
 
 function renderImage(data){
@@ -731,9 +728,9 @@ $(window).resize(function() {
 		$('.square2').css('border-width',`${sw/10}px`);
 		// $('#js-animation-thumb').width('100%');
 		// $('#js-artwork-thumb').width('100%');
-		$('canvas').height(sw*.95);
-		$('canvas').width(sw*.95);
-		$('canvas').css('margin', sw/100);
+		// $('canvas').height(sw*.95);
+		// $('canvas').width(sw*.95);
+		// $('canvas').css('margin', sw/100);
 
 
 	});
@@ -806,7 +803,7 @@ function appendUserAnimations(data){
 
 
 function appendUserArtwork(data){
-	let updatedArtwork = data.userDrawn[0].id.append(artworkId);
+	let updatedArtwork = data.id.append(artworkId);
 
 	const settings = {
 		url: DATABASE_URL + 'userprofile/' + userId,
@@ -829,17 +826,33 @@ function appendUserArtwork(data){
 function registerUser(){
 	$('#js-register-user-form').submit(function(event){
 		event.preventDefault();
+		$('#js-register-user-form').method = "post"; 
 		let newUser = $('#js-username-submit').val();
 		let newPass = $('#js-password-submit').val();
 		let newFirst = $('#js-firstName-submit').val();
 		let newLast = $('#js-lastName-submit').val();
 		//post new user and user profile
-		postNewUser(newUser, newPass, newFirst, newLast);
+		if(newUser && newPass && newFirst && newLast){
+				postNewUser(newUser, newPass, newFirst, newLast);
+		}else {
+			registrationAlert();
+		}
 	})
 }
 
+function registrationAlert(){
+	return alert("Please fill out full form");
+}
+
+function loginAlert(){
+	return alert("Missing username or password");
+}
+
+
 function postNewUser(newUser, newPass, newFirst, newLast){
 	console.log('postNewUser ran '+newUser);	
+					console.log(DATABASE_URL + 'api/users')
+
 	const settings = {
 		url: DATABASE_URL + 'api/users',
 		method: 'POST',
@@ -854,6 +867,7 @@ function postNewUser(newUser, newPass, newFirst, newLast){
 				'Content-Type': 'application/json'
 			},
 			success: function(){
+				console.log(DATABASE_URL + '/api/users')
 				postNewUserProfile(newUser, newFirst, newLast);
 			},
 			error: console.error('POST postNewUser error')		
@@ -879,8 +893,8 @@ function postNewUserProfile(newUser, newFirst, newLast){
 				'Content-Type': 'application/json'
 			},
 			success: function(){
-				console.log('success POST postNewUserProfile');
-				$("#js-register-user-form").unbind().submit();
+				console.log('replacing');
+				window.location.replace('/login.html');
 			},
 			error: console.error('POST postNewUserProfile error')		
 	};
@@ -895,7 +909,12 @@ function loginUser(){
 		localStorage.username = username;
 
 		const pw = $("#js-login-password").val();
-		postUserLogin(storeAuth, un, pw);
+
+		if(un && pw){
+			postUserLogin(storeAuth, un, pw);
+		}else {
+			loginAlert();
+		}
 	})
 }
 
@@ -922,7 +941,9 @@ function postUserLogin(callback, un, pw){
 function storeAuth(data){
 	AUTHORIZATION_CODE = data.authToken;
 	localStorage.auth = data.authToken;
-	$("#js-login-user-form").unbind().submit();
+	window.location.replace('/dashboard.html');
+
+//	$("#js-login-user-form").unbind().submit();
 }
 
 function getUserId(callback){
@@ -962,7 +983,16 @@ function createUserdrawnObject(){
 	userId = userProfileId;
 	// POST creationDate
 	let creationDate = new Date();
-	postUserDrawn(frameNumber, drawing, title, animationId, artist, creationDate, userId);
+	if(drawing[0]){
+		postUserDrawn(frameNumber, drawing, title, animationId, artist, creationDate, userId);
+	} else {
+		drawingAlert();
+		console.log('no drawing');
+	}
+}
+
+function drawingAlert(){
+	return alert("Draw Something First!");
 }
 
 
@@ -998,21 +1028,13 @@ function getAndReturnAnimationInfo(){
 	getAndGatherAnimationInfo();
 }
 
-
-
 function getAndReturnArtistInfo(){
 	getUserProfile(returnUserInfo);
 }
 
-
-
-
 function getAndRenderUsername(){
 	getUserProfile(renderUsername);
-
 }
-
-
 
 function getAndReturnUsername(){
 	getUserProfile(returnUsername);
@@ -1030,30 +1052,30 @@ function getAndReturnArtistName(){
 
 }
 
-
 function postUserDrawn(_frameNumber, drawing, _title, _animationId, _artist, _creationDate, _userId){
-	console.log('postUserDrawn ran ' + _frameNumber);	
+	console.log('postUserDrawn ran ' + drawing[0].lines);	
 	const settings = {
 		url: DATABASE_URL + 'userdrawn',
 		method: 'POST',
-			data: JSON.stringify({
+		data: JSON.stringify({
 				"frameNumber": _frameNumber,
 				"frame": drawing,
 			    "title": _title,
 			    "animationId": _animationId,
 			    "artist": _artist,
 			    "creationDate": _creationDate,
-				"userId": _userId
+				"artistId": _userId
 			}),
-			dataType: 'json',
-			headers: {
+		dataType: 'json',
+		headers: {
 				'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 				'Content-Type': 'application/json'
 			},
-			success: function(){
+		success: function(){
+				console.log('unbinding');
 				$("#js-artwork-form").unbind().submit();
 			},
-			error: console.error('POST userdrawn error')		
+		error: console.error('POST userdrawn error')		
 	};
 	$.ajax(settings);
 }
