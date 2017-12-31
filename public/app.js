@@ -1,131 +1,3 @@
-let imageSketch = function(p){
-	let initialWidth = 1000;
-	let initialRadius = 50; 
-	p.preload = function(){
-
-	}
-
-	p.setup = function() {
-			p.createCanvas($("#js-artwork-thumb").width(), $("#js-artwork-thumb").width());
-			p.background(50, 800, 210);
-
-			p.displayDrawing();
-			p.noLoop();
-			p.frameRate(15);
-	}
-
-	 p.windowResized = function(){
-	 	let w = $("#js-artwork-thumb").width();
-	 }
-
-	p.displayDrawing = function(){
-		if(userDrawing){
-
-			for (let i = 0; i < userDrawing.length; i++) {
-
-		   		let lines = userDrawing[i].lines;
-		   		let points = userDrawing[i].points;
-				let weight = userDrawing[i].radius;
-				let radiusRatio = $("#js-artwork-thumb").width()/initialWidth;
-				let weightMap = weight*radiusRatio;
-
-
-				if(lines){
-					for(let j = 0; j < lines.length; j++){
-						let c = userDrawing[i].color;
-						p.strokeWeight(weightMap);
-						p.stroke(c);
-						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						// p.line(lines[j].mouseX, lines[j].mouseY, lines[j].pmouseX, lines[j].pmouseY);
-						p.line(mXmap, mYmap, pXmap, pYmap);
-
-					}
-				}
-				if(points){
-					for(let j = 0; j < points.length; j++){
-						let mXmap = p.map(points[j].x, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						let mYmap = p.map(points[j].y, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						let c = userDrawing[i].color;
-						p.noStroke();
-						p.fill(c);
-						p.ellipse(mXmap, mYmap, weightMap, weightMap);
-					}
-				}
-			}
-		}
-	}
-}
-
-let theatre = function(p){
-	let frameCount = 0;
-	let initialWidth = 1000;
-	let initialRadius = 50; 
-
-	p.preload = function(){
-
-	}
-
-	p.windowResized = function(){
-		p.resizeCanvas($("#js-theatre-holder").width(), $("#js-theatre-holder").width());
-	}
-
-
-	p.setup = function() {
-			let canvas  = p.createCanvas($("#js-theatre-holder").width(), $("#js-theatre-holder").width());
-			canvas.parent('#js-theatre-holder');
-
-			p.frameRate(12);
-
-	}
-
-	p.draw = function(){
-		p.background(50, 800, 210);
-		p.displayDrawing(userTheatre[frameCount].frame);
-		frameCount++;
-		if(frameCount > userTheatre.length-1) frameCount = 0;
-	}
-
-	p.displayDrawing = function(frame){
-		if(userTheatre){
-			for (let i = 0; i < frame.length; i++) {
-
-		   		let lines = frame[i].lines;
-		   		let points = frame[i].points;
-				let weight = frame[i].radius;
-				let radiusRatio = $("#js-theatre-holder").width()/initialWidth;
-				let weightMap = weight*radiusRatio;
-
-				if(lines){
-					for(let j = 0; j < lines.length; j++){
-						let c = frame[i].color;
-						p.strokeWeight(weightMap);
-						p.stroke(c);
-						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						// p.line(lines[j].mouseX, lines[j].mouseY, lines[j].pmouseX, lines[j].pmouseY);
-						p.line(mXmap, mYmap, pXmap, pYmap);
-					}
-				}
-				if(points){
-					for(let j = 0; j < points.length; j++){
-						let mXmap = p.map(points[j].x, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						let mYmap = p.map(points[j].y, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						let c = frame[i].color;
-						p.noStroke();
-						p.fill(c);
-						p.ellipse(mXmap, mYmap, weightMap, weightMap);
-					}
-				}
-			}
-		}
-	}
-}
-
 let userArtworkObject = {};
 let frameC;
 let drawing = [];
@@ -134,7 +6,7 @@ let username;
 let userId;
 
 let AUTHORIZATION_CODE;
-DATABASE_URL = 'http://localhost:8080/';
+DATABASE_URL = '/';
 
 let GUIDE_URL;
 const EXTENSION = '.png'
@@ -1132,3 +1004,131 @@ function deleteUser(){
 
 
 $(runApp)
+
+let imageSketch = function(p){
+	let initialWidth = 1000;
+	let initialRadius = 50; 
+	p.preload = function(){
+
+	}
+
+	p.setup = function() {
+			p.createCanvas($("#js-artwork-thumb").width(), $("#js-artwork-thumb").width());
+			p.background(50, 800, 210);
+
+			p.displayDrawing();
+			p.noLoop();
+			p.frameRate(15);
+	}
+
+	 p.windowResized = function(){
+	 	let w = $("#js-artwork-thumb").width();
+	 }
+
+	p.displayDrawing = function(){
+		if(userDrawing){
+
+			for (let i = 0; i < userDrawing.length; i++) {
+
+		   		let lines = userDrawing[i].lines;
+		   		let points = userDrawing[i].points;
+				let weight = userDrawing[i].radius;
+				let radiusRatio = $("#js-artwork-thumb").width()/initialWidth;
+				let weightMap = weight*radiusRatio;
+
+
+				if(lines){
+					for(let j = 0; j < lines.length; j++){
+						let c = userDrawing[i].color;
+						p.strokeWeight(weightMap);
+						p.stroke(c);
+						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, $("#js-artwork-thumb").width());
+						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, $("#js-artwork-thumb").width());
+						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, $("#js-artwork-thumb").width());
+						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, $("#js-artwork-thumb").width());
+						// p.line(lines[j].mouseX, lines[j].mouseY, lines[j].pmouseX, lines[j].pmouseY);
+						p.line(mXmap, mYmap, pXmap, pYmap);
+
+					}
+				}
+				if(points){
+					for(let j = 0; j < points.length; j++){
+						let mXmap = p.map(points[j].x, 0, initialWidth, 0, $("#js-artwork-thumb").width());
+						let mYmap = p.map(points[j].y, 0, initialWidth, 0, $("#js-artwork-thumb").width());
+						let c = userDrawing[i].color;
+						p.noStroke();
+						p.fill(c);
+						p.ellipse(mXmap, mYmap, weightMap, weightMap);
+					}
+				}
+			}
+		}
+	}
+}
+
+let theatre = function(p){
+	let frameCount = 0;
+	let initialWidth = 1000;
+	let initialRadius = 50; 
+
+	p.preload = function(){
+
+	}
+
+	p.windowResized = function(){
+		p.resizeCanvas($("#js-theatre-holder").width(), $("#js-theatre-holder").width());
+	}
+
+
+	p.setup = function() {
+			let canvas  = p.createCanvas($("#js-theatre-holder").width(), $("#js-theatre-holder").width());
+			canvas.parent('#js-theatre-holder');
+
+			p.frameRate(12);
+
+	}
+
+	p.draw = function(){
+		p.background(50, 800, 210);
+		p.displayDrawing(userTheatre[frameCount].frame);
+		frameCount++;
+		if(frameCount > userTheatre.length-1) frameCount = 0;
+	}
+
+	p.displayDrawing = function(frame){
+		if(userTheatre){
+			for (let i = 0; i < frame.length; i++) {
+
+		   		let lines = frame[i].lines;
+		   		let points = frame[i].points;
+				let weight = frame[i].radius;
+				let radiusRatio = $("#js-theatre-holder").width()/initialWidth;
+				let weightMap = weight*radiusRatio;
+
+				if(lines){
+					for(let j = 0; j < lines.length; j++){
+						let c = frame[i].color;
+						p.strokeWeight(weightMap);
+						p.stroke(c);
+						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, $("#js-theatre-holder").width());
+						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, $("#js-theatre-holder").width());
+						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, $("#js-theatre-holder").width());
+						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, $("#js-theatre-holder").width());
+						// p.line(lines[j].mouseX, lines[j].mouseY, lines[j].pmouseX, lines[j].pmouseY);
+						p.line(mXmap, mYmap, pXmap, pYmap);
+					}
+				}
+				if(points){
+					for(let j = 0; j < points.length; j++){
+						let mXmap = p.map(points[j].x, 0, initialWidth, 0, $("#js-theatre-holder").width());
+						let mYmap = p.map(points[j].y, 0, initialWidth, 0, $("#js-theatre-holder").width());
+						let c = frame[i].color;
+						p.noStroke();
+						p.fill(c);
+						p.ellipse(mXmap, mYmap, weightMap, weightMap);
+					}
+				}
+			}
+		}
+	}
+}
