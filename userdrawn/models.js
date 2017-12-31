@@ -44,7 +44,6 @@ const userdrawnSchema = mongoose.Schema({
 // when creating video player, may want virtual that will allow the arrays to add all content together? 
 
 userdrawnSchema.methods.apiRepr = function(){
-  console.log('frame is '+this.frame);//JSON.stringify(frameSubSchema));
   return{
     id: this._id,
     frameNumber: this.frameNumber,

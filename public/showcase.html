@@ -14,21 +14,22 @@
 	<!-- <script src="theatre.js"></script> -->
 	<link href="meyerreset.css" rel="stylesheet" type="text/css">
 	<link href="main.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 
 </head>
 <body onload="renderShowcase();">
 	<div id="wrapper">
 		<header role="banner"><image src="media/artlab_logo.png" alt="artlab logo"></header>
-		<main role="main">
+		<main role="main" class="container">
 			<a id="dashboard-link" href="dashboard.html">User Dashboard</a>
 			<a id="settings-link" href="settings.html">User Settings</a>
-			<div class="square1">				
+			<div class="square1 col-xl-6">				
 					<div id="js-credits-holder">
 						<p><u>Artists (in order of frames)</u></p>
 					</div>
 				<div id="js-artwork-thumb"></div>
 			</div>
-			<div class="square2"> 
+			<div class="square2 col-xl-6"> 
 				<div id="js-theatre-holder"></div>
 				<div class="plack-black-static"></div>
 			</div>

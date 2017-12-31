@@ -26,20 +26,48 @@ router.get('/:id', jwtAuth, (req, res) =>{
 });
 
 
-
 router.get('/', jwtAuth, (req, res) => {
 	const filters = {};
 	const queryFields = ["username"];
 	queryFields.forEach(field => {
-		console.log('Found!'+req.query[field]);
 		if(req.query[field]){
 			filters[field] = req.query[field];
 		}
 	});
 	Userprofile
 		.find(filters)
-		.then(up => res.json(up[0].apiRepr()))		
+		.then(userprofile => {
+			res.json({
+				userprofile: userprofile.map(
+				(userprofile) => userprofile.apiRepr())
+			});	
+		})	
         .catch(
+			err => {
+				console.error(err);
+				res.status(500).json({message: 'Internal Server Error'});
+		});
+});
+
+
+router.get('/', jwtAuth, (req, res) => {
+	const filters = {};
+	const queryFields = ["animationId", "artistId", "creationDate", "title"];
+	queryFields.forEach(field => {
+		if(field == "artistId") console.log('HI! 	'+field+":"+req.query[field]);
+		if(req.query[field]){
+			filters[field] = req.query[field];
+		}
+	});
+	UserDrawn
+		.find(filters)
+		.then(userdrawn => {
+			res.json({
+				userdrawn: userdrawn.map(
+					(userdrawn) => userdrawn.apiRepr())
+			});
+		})
+		.catch(
 			err => {
 				console.error(err);
 				res.status(500).json({message: 'Internal Server Error'});

@@ -219,7 +219,6 @@ describe('Userdrawn API resource', function(){
 				.findOne()
 				.then(function(userdrawn){
 					update.id = userdrawn.id;
-					//post the fake data
 					return chai
 						.request(app)
 						.put(`/userdrawn/${userdrawn.id}`)
