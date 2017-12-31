@@ -59,12 +59,12 @@ router.get('/', jwtAuth, (req, res) => {
 			filters[field] = req.query[field];
 		}
 	});
-	UserDrawn
+	Userprofile
 		.find(filters)
-		.then(userdrawn => {
+		.then(userprofile => {
 			res.json({
-				userdrawn: userdrawn.map(
-					(userdrawn) => userdrawn.apiRepr())
+				userprofile: userprofile.map(
+					(userprofile) => userprofile.apiRepr())
 			});
 		})
 		.catch(
@@ -103,6 +103,8 @@ router.post('/', (req, res) =>{
 		});
 });
 
+
+
  router.put('/:id', jwtAuth, (req, res) => {
 	if(!(req.params.id && req.body.id && req.params.id === req.body.id)){
 		const message = (
@@ -121,9 +123,9 @@ router.post('/', (req, res) =>{
 		}
 	})
 
-	UserDrawn
+	Userprofile
 		.findByIdAndUpdate(req.params.id, {$set: toUpdate})
-		.then(UserDrawn => {
+		.then(Userprofile => {
 			console.log("Updated");
 			res.status(204).end();
 		})

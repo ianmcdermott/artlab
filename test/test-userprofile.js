@@ -42,11 +42,15 @@ function generateToken(){
 }
 
 function generateUserProfileData(){
+	const fn = faker.name.firstName();
+  	const ln = faker.name.lastName();
 	return {
 		username: faker.internet.userName(),
-  		name: faker.name.firstName()+' '+faker.name.lastName(),
+  		firstName: fn,
+  		lastName: ln,
 	    artwork: [faker.random.alphaNumeric(24), faker.random.alphaNumeric(24), faker.random.alphaNumeric(24)],
-	    animations: [faker.random.alphaNumeric(24), faker.random.alphaNumeric(24), faker.random.alphaNumeric(24)]
+	    animations: [faker.random.alphaNumeric(24), faker.random.alphaNumeric(24), faker.random.alphaNumeric(24)],
+	    name: fn+" "+ln
 	}
 }
 
@@ -142,7 +146,7 @@ describe('Userprofile API resource', function(){
 		it('Should add a new userprofile', function(){
 			const token = generateToken();
 			const newUserProfile = generateUserProfileData();
-
+			console.log("proffy "+ JSON.stringify(newUserProfile));
 			return chai.request(app)
 				.post('/userprofile')
 				.set('authorization', `Bearer ${token}`)
@@ -160,14 +164,15 @@ describe('Userprofile API resource', function(){
 					return Userprofile.findById(res.body.id);
 				})
 				.then(function(userprofile) {
-					resUserProfile.username.should.equal(newUserProfile.username);	
-					resUserProfile.name.should.equal(newUserProfile.name);		
-					resUserProfile.artwork[0].should.equal(newUserProfile.artwork[0]);		
-					resUserProfile.animations[0].should.equal(newUserProfile.animations[0]);			
+					userprofile.username.should.equal(newUserProfile.username);	
+					userprofile.name.should.equal(newUserProfile.name);		
+					userprofile.artwork[0].should.equal(newUserProfile.artwork[0]);		
+					userprofile.animations[0].should.equal(newUserProfile.animations[0]);			
 				});
 		});
 	});
 
+	
 	describe('PUT endpoint', function(){
 		const token = generateToken();
 		let resUserProfile;
@@ -178,24 +183,25 @@ describe('Userprofile API resource', function(){
 				.findOne()
 				.then(function(userprofile){
 					update.id = userprofile.id;
-					console.log(`here ya go! /userprofile/${userprofile.id}`);
 					return chai
 						.request(app)
 						.put(`/userprofile/${userprofile.id}`)
 						.set('authorization', `Bearer ${token}`)
 						.send(update);
+
 				})
 				.then(function(res) {
 					res.should.have.status(204);
 					return Userprofile.findById(update.id);
 				})
 				.then(function(userprofile){
-					res.body.username.should.equal(update.username);
-					res.body.name.should.equal(update.name);
-					res.body.artwork[0].should.equal(update.artwork[0]);
-					res.body.animations[0].should.equal(update.animations[0]);
+					userprofile.username.should.equal(update.username);
+					userprofile.name.should.equal(update.name);
+					userprofile.artwork[0].should.equal(update.artwork[0]);
+					userprofile.animations[0].should.equal(update.animations[0]);
 		});
 	});
+
 
 	describe('DELETE endpoint', function(){
 		const token = generateToken();
