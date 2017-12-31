@@ -2,17 +2,22 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const {app, runServer, closeServer} = require('../server');
 const {User} = require('../users');
-const {JWT_SECRET, DATABASE_URL} = require('../config');
+const {JWT_SECRET} = require('../config');
 const {TEST_DATABASE_URL} = require('../config');
 
-global.DATABASE_URL = DATABASE_URL;
+global.DATABASE_URL = TEST_DATABASE_URL;
 
 const expect = chai.expect;
 
 chai.use(chaiHttp);
+
+function tearDownDB(){
+	return mongoose.connection.dropDatabase()
+}
 
 describe('/api/users', function(){
 	const username = 'exampleUser';
@@ -25,19 +30,16 @@ describe('/api/users', function(){
 	const lastNameB = 'LastB'; 
 
 	before(function() {
-	 	return runServer();
+	 	return runServer(TEST_DATABASE_URL);
+	});
+
+
+	afterEach(function() {
+		return tearDownDB();
 	});
 
 	after(function() {
 	    return closeServer();
-	});
-
-	beforeEach(function() {
-
-	});
-
-	afterEach(function() {
-		return User.remove({});
 	});
 
 	describe('/api/users', function(){

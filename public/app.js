@@ -46,7 +46,6 @@ function getAnimations(callback){
 
 function displayGuideImage(data){
 	console.log('displayGuideImage ran');
-	// frameC = data.animations[0].frameCount;
 	$("body").append(`<script src="sketch.js" type="text/javascript"></script>`);
 	new p5();
 }
@@ -55,9 +54,6 @@ function displayGuideImage(data){
 function prepCanvas(){
 	retrieveLocalStorage();
 	getGuideUrl();
-	// retrieveUserArtworkObject();
-//	drawing = [];
-	//getRandomAnimation();
 	submitArtwork();
 }
 
@@ -307,7 +303,7 @@ function getArtworkInfo(callback){
 
 function renderArtworkInfo(data){
 	$('#js-artwork-info').html(`
-		<p>by ${data.name}</p>
+		<p>by ${data.userprofile[0].name}</p>
 		<p>Created on: ${data.artwork[0].date}</p>`);
 }
 
@@ -388,14 +384,14 @@ function getUserProfile(callback){
 function gatherArtistInfo(data){
 	console.log(JSON.stringify(data));
 	userProfileId = data.id;
-	localStorage.userProfileId = data.id;
-	localStorage.artist = data.name;
-	console.log('gatherArtistInfo running'+data.id);
+	localStorage.userProfileId = data.userprofile[0].id;
+	localStorage.artist = data.userprofile[0].name;
+	console.log('gatherArtistInfo running'+data.userprofile[0].id);
 	$.extend(userArtworkObject, {
-		id: data.id,
-	    username: data.username,
-	    artist: data.name,
-	    userProfileId: data.id
+		id: data.userprofile[0].id,
+	    username: data.userprofile[0].username,
+	    artist: data.userprofile[0].name,
+	    userProfileId: data.userprofile[0].id
 	});
 
 
@@ -470,13 +466,13 @@ function getUserInfo(callback){
 
 function renderUsername(data){
 	console.log('renderUsername running');
-	console.log(JSON.stringify(data.id));
-	$('#js-user-header').html(`<p>Welcome ${data.name}`);
+	console.log(JSON.stringify(data.userprofile[0].name));
+	$('#js-user-header').html(`<p>Welcome ${data.userprofile[0].name}`);
 }
 
 function renderUserInfo(data){
 	console.log('renderUserInfo running');
-	$('#js-userinfo').html(data.username);
+	$('#js-userinfo').html(data.userprofile[0].username);
 }
 
 
@@ -913,7 +909,7 @@ function getAndReturnUsername(){
 }
 
 function returnUsername(data){
-	return data.name;
+	return data.userprofile[0].name;
 }
 
 function getAndReturnAnimationId(){
