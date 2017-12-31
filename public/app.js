@@ -217,7 +217,7 @@ function getArtworkByUserId(callback){
 }
 
 function getArtworkByAnimationId(callback, AID){
-	console.log('getArtworkByAnimationId ran '+DATABASE_URL+`userdrawns/`+AID);
+	console.log('getArtworkByAnimationId ran '+DATABASE_URL+`userdrawn/`+AID);
 	const settings = {
 		url:  DATABASE_URL+`userdrawn/`,
 		data: {animationId: AID},
