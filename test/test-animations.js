@@ -43,7 +43,8 @@ function generateAnimationData(){
 		title: faker.name.firstName(),
 	    lastDrawnDate: faker.date.recent(),
 	  	lastFrame: generateLastFrameData(),
-	    frameCount: faker.random.number(100)
+	    frameCount: faker.random.number(100),
+	    guideUrl: faker.image.imageUrl()
 	}
 }
 
@@ -131,7 +132,7 @@ describe('Animations API resource', function(){
 					res.body.animations.should.have.length.of.at.least(1);
 					res.body.animations.forEach(function(post){
 						post.should.a('object');
-						post.should.include.keys('id', 'title', 'lastDrawnDate', 'lastFrame', 'frameCount');
+						post.should.include.keys('id', 'title', 'lastDrawnDate', 'lastFrame', 'frameCount', 'guideUrl');
 					});
 					resAnimation = res.body.animations[0];
 					return Animations.findById(resAnimation.id);
@@ -144,6 +145,7 @@ describe('Animations API resource', function(){
 					resAnimation.frameCount.should.equal(animation.frameCount);
 				});
 		});
+		it('Should')
 	});
 
 	describe('POST endpoint', function(){
@@ -161,7 +163,7 @@ describe('Animations API resource', function(){
 					res.should.be.json;
 					res.body.should.be.a('object');
 					res.body.should.include.keys(
-						'id', 'title', 'lastDrawnDate', 'lastFrame', 'frameCount');
+						'id', 'title', 'lastDrawnDate', 'lastFrame', 'frameCount', 'guideUrl');
 					res.body.title.should.equal(newAnimation.title);
 					res.body.lastDrawnDate.should.be.sameMoment(newAnimation.lastDrawnDate);
 					res.body.lastFrame.should.eql(newAnimation.lastFrame);
@@ -203,9 +205,10 @@ describe('Animations API resource', function(){
 				.then(function(animation){
 					animation.title.should.equal(update.title);
 					animation.lastDrawnDate.should.equalDate(update.lastDrawnDate);
-			     	// animation.lastFrame.should.eql(update.lastFrame);
+			     	animation.lastFrame.color.should.equal(update.lastFrame.color);
+			     	animation.lastFrame.radius.should.equal(update.lastFrame.radius);
 					animation.frameCount.should.equal(update.frameCount);
-
+					animation.guideUrl.should.equal(update.guideUrl)
 				});
 		});
 	});

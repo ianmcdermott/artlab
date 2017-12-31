@@ -49,7 +49,7 @@ function generateUserdrawnData(){
 			animationId: faker.random.alphaNumeric(24),
 			artist: faker.company.bsNoun(),
 		    creationDate: faker.date.recent(),
-		    userId: faker.random.alphaNumeric(24)
+		    artistId: faker.random.alphaNumeric(24)
 	}
 }
 
@@ -144,14 +144,14 @@ describe('Userdrawn API resource', function(){
 					res.body.userdrawn.should.have.length.of.at.least(1);
 					res.body.userdrawn.forEach(function(userdrawn){
 						userdrawn.should.be.a('object');
-						userdrawn.should.include.keys('id', 'frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'userId');
+						userdrawn.should.include.keys('id', 'frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'artistId');
 						userdrawn.frameNumber.should.be.a('number');
-						userdrawn.frame.should.be.a('object');
+						userdrawn.frame.should.be.a('array');
 						userdrawn.title.should.be.a('string');
 						userdrawn.animationId.should.be.a('string');
 						userdrawn.artist.should.be.a('string');
 						userdrawn.creationDate.should.be.a('string');
-						userdrawn.userId.should.be.a('string');
+						userdrawn.artistId.should.be.a('string');
 
 					});
 					resUserdrawn = res.body.userdrawn[0];
@@ -165,7 +165,7 @@ describe('Userdrawn API resource', function(){
 					resUserdrawn.animationId.should.equal(userdrawn.animationId);		
 					resUserdrawn.artist.should.equal(userdrawn.artist);		
 					resUserdrawn.creationDate.should.be.sameMoment(userdrawn.creationDate);		
-					resUserdrawn.userId.should.equal(userdrawn.userId);		
+					resUserdrawn.artistId.should.equal(userdrawn.artistId);		
 				});
 		});
 	});
@@ -185,14 +185,15 @@ describe('Userdrawn API resource', function(){
 					res.should.be.json;
 					res.body.should.be.a('object');
 					res.body.should.include.keys(
-						'id', 'frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'userId');
+						'id', 'frameNumber', 'frame', 'title', 'animationId', 'artist', 'creationDate', 'artistId');
 					res.body.frameNumber.should.equal(newUserdrawn.frameNumber);
-					res.body.frame.should.eql(newUserdrawn.frame);
+					res.body.frame[0].color.should.equal(newUserdrawn.frame.color);
+					res.body.frame[0].radius.should.equal(newUserdrawn.frame.radius);
 					res.body.title.should.equal(newUserdrawn.title);
 					res.body.animationId.should.equal(newUserdrawn.animationId);
 					res.body.artist.should.equal(newUserdrawn.artist);
 					res.body.creationDate.should.be.sameMoment(newUserdrawn.creationDate);
-					res.body.userId.should.equal(newUserdrawn.userId);
+					res.body.artistId.should.equal(newUserdrawn.artistId);
 					res.body.id.should.not.be.null;
 					return UserDrawn.findById(res.body.id);
 				})
@@ -203,7 +204,7 @@ describe('Userdrawn API resource', function(){
 					userdrawn.animationId.should.equal(newUserdrawn.animationId);		
 					userdrawn.artist.should.equal(newUserdrawn.artist);		
 					userdrawn.creationDate.should.be.sameMoment(newUserdrawn.creationDate);		
-					userdrawn.userId.should.equal(newUserdrawn.userId);		
+					userdrawn.artistId.should.equal(newUserdrawn.artistId);		
 				});
 		});
 	});
@@ -234,13 +235,13 @@ describe('Userdrawn API resource', function(){
 					console.log('userdrawn frame is '+JSON.stringify(userdrawn.frame));
 
 					userdrawn.frameNumber.should.equal(update.frameNumber);	
-					userdrawn.frame.color.should.equal(update.frame.color);		
-					userdrawn.frame.radius.should.equal(update.frame.radius);		
+					userdrawn.frame[0].color.should.equal(update.frame.color);		
+					userdrawn.frame[0].radius.should.equal(update.frame.radius);		
 					userdrawn.title.should.equal(update.title);		
 					userdrawn.animationId.should.equal(update.animationId);		
 					userdrawn.artist.should.equal(update.artist);		
 					userdrawn.creationDate.should.be.sameMoment(update.creationDate);		
-					userdrawn.userId.should.equal(update.userId);		
+					userdrawn.artistId.should.equal(update.artistId);		
 		});
 	});
 

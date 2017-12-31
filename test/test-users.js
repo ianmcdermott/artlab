@@ -1,13 +1,14 @@
-'use strict'
+// global.DATABASE_URL = config.DATABASE_URL;
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const jwt = require('jsonwebtoken');
 
 const {app, runServer, closeServer} = require('../server');
 const {User} = require('../users');
-const {JWT_SECRET, TEST_DATABASE_URL} = require('../config');
+const {JWT_SECRET, DATABASE_URL} = require('../config');
+const {TEST_DATABASE_URL} = require('../config');
 
-global.DATABASE_URL = TEST_DATABASE_URL;
+global.DATABASE_URL = DATABASE_URL;
 
 const expect = chai.expect;
 
@@ -24,18 +25,20 @@ describe('/api/users', function(){
 	const lastNameB = 'LastB'; 
 
 	before(function() {
-  		return runServer(TEST_DATABASE_URL);
- 	});
+	 	return runServer();
+	});
 
- 	after(function() {
-   		return closeServer();
-  	});
+	after(function() {
+	    return closeServer();
+	});
 
-  	beforeEach(function() {});
+	beforeEach(function() {
 
-  	afterEach(function() {
-   		return User.remove({});
-  	});
+	});
+
+	afterEach(function() {
+		return User.remove({});
+	});
 
 	describe('/api/users', function(){
 		describe('POST', function(){
