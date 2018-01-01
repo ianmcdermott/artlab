@@ -15,13 +15,16 @@ let numColor = 3;
 let swatches = [];
 let brush;
 
+let frameThickness = $("#js-sketch-holder").width()/10;
+let canvasWidth = $("#js-sketch-holder").width();
+
 let strokeI;
 let img;
 let pg;
 
 let isDrawing = false;
 let releasedMouse = false;
-let initialRadius = 50;
+let initialRadius = canvasWidth/20;
 let guideList = [];
 let fc =0;
 let displayOn = true; 
@@ -31,12 +34,12 @@ function preload(){
 	//guide image loads to graphics buffer to avoid being on same layer as drawn image
 	let frameNum = stringifyFrameNumber(userArtworkObject.frameCount);
 	img = loadImage(GUIDE_URL+frameNum+EXTENSION);
-	console.log(GUIDE_URL+frameNum+EXTENSION);
+	// canvasWidth = $("#js-sketch-holder").width();
 }
 
 
 function setup() {
-	let canvas  = createCanvas(1000, 1000);
+	let canvas  = createCanvas(canvasWidth, canvasWidth);
 	canvas.parent('js-sketch-holder');
 	noStroke();
 	// fill(255);
@@ -59,7 +62,7 @@ function draw() {
 	//set guide image
 	//let frameNum = fc;//Math.floor(map(mouseX, 0, 1200, 0, 300));
 	// frameNumString = stringifyFrameNumber(frameNum);
-	image(img, 100, 100, 800, 800);
+	image(img, frameThickness, frameThickness, canvasWidth*.8,  canvasWidth*.8);
 	//set frame
 	displayDrawing();
 	frame();	
@@ -108,11 +111,11 @@ function displayDrawing(){
 
 function createPallet(){
 	for(let i = 0; i < numColor; i++){
-		swatches.push(new ColorSwatch(((i*100)+50), 50, 50, colorArray[i]));
+		swatches.push(new ColorSwatch(((i*canvasWidth/10)+canvasWidth/20), canvasWidth/20, canvasWidth/20, colorArray[i]));
 	}
 
 	//strokeIcon = new Str5okeIcon(1125, 30, 40);
-	fillIcon = new FillIcon(925, 25, 50);
+	fillIcon = new FillIcon(canvasWidth-frameThickness*.75, canvasWidth/40, canvasWidth/20);
 }
 
 function renderPallet(){
@@ -126,13 +129,13 @@ function renderPallet(){
 function frame(){
 	noStroke();
 	fill(0);
-	rect(0, 0, 1000, 100);
+	rect(0, 0, canvasWidth, frameThickness);
 	fill(0);
-	rect(0, 900, 1000, 100);
+	rect(0, canvasWidth-frameThickness, canvasWidth, frameThickness);
 	fill(0);
-	rect(0, 0, 100, 1000);
+	rect(0, 0, frameThickness, canvasWidth);
 	fill(0);
-	rect(900, 0, 100, 1000);
+	rect(canvasWidth-frameThickness, 0, frameThickness, canvasWidth);
 }
 
 function mouseDragged() {
@@ -153,6 +156,17 @@ function mouseReleased(){
 }
 
 function mouseClicked(){
+	isDrawing = true;
+	for(let i = 0; i < numColor; i++){
+		swatches[i].clicked(mouseX, mouseY);
+	}
+	if(mouseX >= 100 && mouseX <= width-100 && mouseY >= 100 && mouseY <= height-100 ) {
+			brush.click(mouseX, mouseY);
+	}
+}
+
+
+function touchMoved(){
 	isDrawing = true;
 	for(let i = 0; i < numColor; i++){
 		swatches[i].clicked(mouseX, mouseY);
@@ -196,18 +210,15 @@ function ColorSwatch(_x, _y, _r, _c){
 		ellipse(this.x, this.y, this.r, this.r);
 	}
 
-
 	this.clicked = function(_x, _y){
 		let d = dist(_x, _y, this.x, this.y);
 		//if mouse is inside swatch, update brush and fill icon
 			if(d < this.r){
 				fillIcon.c = this.c;
 			//	brush.updateColor(this.c);
-
 		}
 	}
 }
-
 
 class Icon{
 	constructor(_x, _y, _r){
