@@ -6,11 +6,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title>Artlab Register</title>
-
-	<script src="libraries/p5.js"></script>
-	<script src="libraries/p5.dom.js"></script>
-	<script src="libraries/p5.sound.js"></script>
-	<!-- <script src="image.js" type="text/javascript"></script> -->
 	<script
 		  src="https://code.jquery.com/jquery-3.2.1.js"
 		  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
@@ -24,16 +19,17 @@
 </head>
 <body onload="registerUser();">
 	<div id="wrapper">
-		<header role="banner"><image src="media/artlab_logo.png" alt="artlab logo"></header>
+		<header role="banner" class="container"><image src="/media/artlab_logo.svg" alt="artlab logo" class="col-xl-12"></header>
 		<main role="main">
 			<form id="js-register-user-form">
 				<legend class="legend-header">Register</legend>
 				<h2>Sign Up</h2>
-				<input type='text' name="Username" placeholder="Username" id="js-username-submit">
-				<input type='password' name="Password" placeholder="Password" id="js-password-submit">
-				<input type='text' name="firstName" placeholder="First Name" id="js-firstName-submit">
-				<input type='text' name="lastName" placeholder="Last Name" id="js-lastName-submit">
-				<input type="submit" id="#js-register-submit" value="Start Drawing!">
+				<input type='text' name="Username" placeholder="Username" id="js-username-submit" class="register-input">
+				<input type='password' name="Password" placeholder="Password" id="js-password-submit" class="register-input">
+				<input type='password' name="RetypePassword" placeholder="Retype Password" id="js-retype-password" class="register-input">
+				<input type='text' name="firstName" placeholder="First Name" id="js-firstName-submit" class="register-input">
+				<input type='text' name="lastName" placeholder="Last Name" id="js-lastName-submit" class="register-input">
+				<input type="submit" id="#js-register-submit" value="Submit">
 			</form>
 			<div class="centered">
 				<p>Already have an account? <a href="login.html" class="link">Login Here</a></p>

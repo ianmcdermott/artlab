@@ -15,7 +15,7 @@
 	<script src="libraries/p5.dom.js"></script>
 	<script src="libraries/p5.sound.js"></script>
 	<script src="app.js" type="text/javascript"></script>
-
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	<link href="meyerreset.css" rel="stylesheet" type="text/css">
 	<link href="main.css" rel="stylesheet" type="text/css">
 
@@ -23,27 +23,24 @@
 </head>
 <body onload="prepCanvas();">
 	<div id="wrapper">
-		<header role="banner"><image src="media/artlab_logo.png" alt="artlab logo"></header>
-		<main role="main">
-
-		</main>
-		<main role="main">
-			<a id="dashboard-link" href="dashboard.html">User Dashboard</a>
-			<a id="settings-link" href="settings.html">User Settings</a>
-			<div id="js-instructions">
+	<!-- 	<header role="banner" class="container"><image id="logo" src="media/artlab_logo.svg" alt="artlab logo" style="width:200px"></header> -->
+		<main role="main" class="container">
+			<div id="js-instructions" class="col-xl-12">
+				<h2>Instructions</h2>
 				<p>1. Draw a flower stem in between the red dots</p>
-				<p>1. Draw a flower head inside the blue circle</p>
+				<p>2. Draw a flower head inside the blue circle</p>
 			</div>
-			<div id="js-sketch-holder"></div>
-			<form id="js-artwork-form" action="pick.html" >
+				<div id="js-sketch-holder"  ></div>
+			<form id="js-artwork-form" action="pick.html" method="post">
+				<button id="js-artwork-clear">Clear Artwork</button>
 				<input type="text" name="Title" placeholder="Title" id="js-title-form">
 				<input type="submit" value="Submit Artwork" id="js-artwork-submit">
 			</form>
-			<button id="js-artwork-clear">Clear Artwork</button>
 
 		</main>
 		<footer role="contentinfo">
-			<a href="showcase.html">Showcase</a>
+			<a href="dashboard.html">User Dashboard</a>
+			<a href="showcase.html">Animations</a>
 			<a href="gallery.html">Gallery</a>
 		</footer>
 	</div>

@@ -3,7 +3,8 @@ let x = 0;
 let creamsicle = '#ffb241';
 let sage = '#39b876';
 let magenta = '#e32c7e';
-let colorArray = [sage, creamsicle, magenta];
+let eraser = '#a7edff';
+let colorArray = [sage, creamsicle, magenta, eraser];
 let defaultSwatch = colorArray[0];
 
 let radius = 50;
@@ -11,32 +12,46 @@ let fillColor = sage;
 let strokeColor = 255;
 let strokeOn = false;
 let fillOn = true;
-let numColor = 3;
+let numColor = 4;
 let swatches = [];
 let brush;
 
 let frameThickness = $("#js-sketch-holder").width()/10;
 let canvasWidth = $("#js-sketch-holder").width();
+let initialRadius = canvasWidth/20;
+let colorSwatchRadius = canvasWidth/10;
 
 let strokeI;
 let img;
-let pg;
+// let pg;
 
 let isDrawing = false;
 let releasedMouse = false;
-let initialRadius = canvasWidth/20;
+
 let guideList = [];
 let fc =0;
 let displayOn = true; 
 
 function preload(){
-	pg = createGraphics(0, 0);
-	//guide image loads to graphics buffer to avoid being on same layer as drawn image
 	let frameNum = stringifyFrameNumber(userArtworkObject.frameCount);
+	// Load guide image
 	img = loadImage(GUIDE_URL+frameNum+EXTENSION);
-	// canvasWidth = $("#js-sketch-holder").width();
 }
 
+function windowResized() {
+  	resizeCanvas($("#js-sketch-holder").width(),$("#js-sketch-holder").width());
+	canvasWidth = $("#js-sketch-holder").width();
+	frameThickness = canvasWidth/10;
+	initialRadius = canvasWidth/20;
+	colorSwatchRadius = canvasWidth/10;
+	
+	for(let i = 0; i < numColor; i++){
+		swatches[i].resize(((i*colorSwatchRadius)+colorSwatchRadius/2), 
+												  colorSwatchRadius/2, 
+												  colorSwatchRadius/2)
+	}
+	fillIcon.resize(canvasWidth-frameThickness*.75, canvasWidth/40, canvasWidth/20)
+}
 
 function setup() {
 	let canvas  = createCanvas(canvasWidth, canvasWidth);
@@ -57,7 +72,7 @@ function setup() {
 }
 
 function draw() {
-	background(255);
+	background(eraser);
 	('image is '+ guideList[0]);
 	//set guide image
 	//let frameNum = fc;//Math.floor(map(mouseX, 0, 1200, 0, 300));
@@ -111,7 +126,10 @@ function displayDrawing(){
 
 function createPallet(){
 	for(let i = 0; i < numColor; i++){
-		swatches.push(new ColorSwatch(((i*canvasWidth/10)+canvasWidth/20), canvasWidth/20, canvasWidth/20, colorArray[i]));
+		swatches.push(new ColorSwatch(	((i*colorSwatchRadius)+colorSwatchRadius/2), 
+																colorSwatchRadius/2, 
+																colorSwatchRadius/2, 
+																    colorArray[i]));
 	}
 
 	//strokeIcon = new Str5okeIcon(1125, 30, 40);
@@ -127,19 +145,24 @@ function renderPallet(){
 }
 
 function frame(){
+	//FRAME DEBUG
+		// noFill();
+		// stroke(0)
+		// strokeWeight(1);
+	
+	//Frame Appearance
 	noStroke();
 	fill(0);
+	
+	//Frame Render
 	rect(0, 0, canvasWidth, frameThickness);
-	fill(0);
 	rect(0, canvasWidth-frameThickness, canvasWidth, frameThickness);
-	fill(0);
 	rect(0, 0, frameThickness, canvasWidth);
-	fill(0);
 	rect(canvasWidth-frameThickness, 0, frameThickness, canvasWidth);
 }
 
 function mouseDragged() {
-	if(mouseX > 100 && mouseX < 900 && mouseY > 100 && mouseY < 900){
+	if(mouseX > frameThickness && mouseX < canvasWidth-frameThickness && mouseY > frameThickness && mouseY <  canvasWidth-frameThickness){
 		isDrawing = true;
 		releasedMouse = false;
 		brush.drag(mouseX, mouseY);
@@ -160,19 +183,8 @@ function mouseClicked(){
 	for(let i = 0; i < numColor; i++){
 		swatches[i].clicked(mouseX, mouseY);
 	}
-	if(mouseX >= 100 && mouseX <= width-100 && mouseY >= 100 && mouseY <= height-100 ) {
-			brush.click(mouseX, mouseY);
-	}
-}
-
-
-function touchMoved(){
-	isDrawing = true;
-	for(let i = 0; i < numColor; i++){
-		swatches[i].clicked(mouseX, mouseY);
-	}
-	if(mouseX >= 100 && mouseX <= width-100 && mouseY >= 100 && mouseY <= height-100 ) {
-			brush.click(mouseX, mouseY);
+	if(mouseX >= frameThickness && mouseX <= canvasWidth-frameThickness && mouseY >= frameThickness && mouseY <= canvasWidth-frameThickness) {
+		brush.click(mouseX, mouseY);
 	}
 }
 
@@ -218,6 +230,12 @@ function ColorSwatch(_x, _y, _r, _c){
 			//	brush.updateColor(this.c);
 		}
 	}
+
+	this.resize = function(_x, _y, _r){
+		this.x = _x;
+		this.y = _y;
+		this.r = _r;
+	}
 }
 
 class Icon{
@@ -230,6 +248,12 @@ class Icon{
 
 	display(){
 		rect(this.x, this.y, this.r);
+	}
+
+	resize(_x, _y, _r){
+		this.x = _x;
+		this.y = _y;
+		this.r = _r;
 	}
 }
 

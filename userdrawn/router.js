@@ -11,9 +11,10 @@ mongoose.Promise = global.Promise;
 const {UserDrawn} = require('./models');
 
 const app = express();
-router.use(bodyParser.json());
-
+router.use(bodyParser.json({limit: '500mb'}));
+router.use(bodyParser.urlencoded({limit: '500mb', extended: true}));
 const jwtAuth = passport.authenticate('jwt', {session: false});
+
 
 
 router.get('/:id', jwtAuth, (req, res) =>{
@@ -36,10 +37,8 @@ router.get('/', jwtAuth, (req, res) => {
 			filters[field] = req.query[field];
 		}
 	});
-	console.log('filters ar e:'+JSON.stringify(filters));
 	UserDrawn
 		.find(filters)
-		//.limit(10)
 		.then(userdrawn => {
 			console.log("iya"+JSON.stringify(userdrawn));
 			res.json({

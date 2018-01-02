@@ -24,6 +24,26 @@ let artist;
 // put drawing to user profile endpoint after submit art  
 // Make sure grabbing random frame is working
 
+// •••• Alerts ••••  //
+function checkAlerts(){
+	switch(event){
+		case 0:
+			passwordDoesntMatchAlert();
+			break;
+		case 1:
+			passwordTooLongAlert();
+			break;
+		case 2:
+			passwordTooShortAlert();
+			break;
+		case 3:
+			usernameTakenAlert();
+			break;	
+		default:
+
+	}
+}
+
 // *Canvas* load guide image for the canvas and display canvas from sketch.js file
 function getAndDisplayGuideImage(){
 	console.log('getAndDisplayGuideImage ran');
@@ -52,6 +72,7 @@ function displayGuideImage(data){
 
 
 function prepCanvas(){
+	$("#js-artwork-clear").click(event => event.preventDefault());
 	retrieveLocalStorage();
 	getGuideUrl();
 	submitArtwork();
@@ -64,7 +85,6 @@ function getGuideUrl(){
 
 function returnRandomGuideUrl(data){
 	let r = Math.floor(Math.random()*data.animations.length)
-	console.log("Rand is "+ data.animations[r].guideUrl);
 	GUIDE_URL =  data.animations[r].guideUrl;
 	extendUserArtworkObject(data, r);
 }
@@ -227,14 +247,15 @@ function getArtworkByAnimationId(callback, AID){
 }
 
 function renderArtworkThumb(data){
-	let cDate = new Date(data.userdrawn[0].creationDate).toDateString();
+	let rand = Math.floor(Math.random()*data.userdrawn.length)
+	let cDate = new Date(data.userdrawn[rand].creationDate).toDateString();
 
 	//load user drawing into its own object to be more easily accessible in p5 code
 	$('#js-artwork-info').html(`
-		<p>${data.userdrawn[0].title}</p>
+		<p>${data.userdrawn[rand].title}</p>
 		<p>Created on:</p><p>${cDate}</p>`);
 	if(data.userdrawn){	
-		userDrawing = data.userdrawn[0].frame;
+		userDrawing = data.userdrawn[rand].frame;
 		new p5(imageSketch, "js-artwork-thumb");
 	} else {
 		console.log('no data');
@@ -594,13 +615,10 @@ $(window).resize(function() {
 		$('.square2').height(sw);
 		$('.square1').css('border-width',`${sw/10}px`);
 		$('.square2').css('border-width',`${sw/10}px`);
-		// $('#js-animation-thumb').width('100%');
-		// $('#js-artwork-thumb').width('100%');
-		// $('canvas').height(sw*.95);
-		// $('canvas').width(sw*.95);
-		// $('canvas').css('margin', sw/100);
-
-
+		// let mainWidth = $(window).height()/1170;
+		// $('main').('width', mainWidth);
+		let sketchHolderWidth = $('#js-sketch-holder').width();
+		$('#js-sketch-holder').height(sketchHolderWidth);
 	});
 
 function runApp(){
@@ -693,24 +711,59 @@ function appendUserArtwork(data){
 
 function registerUser(){
 	$('#js-register-user-form').submit(function(event){
+
 		event.preventDefault();
-		$('#js-register-user-form').method = "post"; 
+		console.log('pword '+$("#js-password-submit").length)
+
 		let newUser = $('#js-username-submit').val();
 		let newPass = $('#js-password-submit').val();
 		let newFirst = $('#js-firstName-submit').val();
 		let newLast = $('#js-lastName-submit').val();
+		fillFormAlert(newUser, newPass, newFirst, newLast);
+		passwordDoesntMatchAlert();
+		passwordTooLongAlert();
+		passwordTooShortAlert();
+
 		//post new user and user profile
-		if(newUser && newPass && newFirst && newLast){
-				postNewUser(newUser, newPass, newFirst, newLast);
-		}else {
-			registrationAlert();
-		}
+			if(newUser && newPass && newFirst && newLast){
+				console.log('posting');
+				// postNewUser(newUser, newPass, newFirst, newLast);
+			}
+		
 	})
 }
 
-function registrationAlert(){
-	return alert("Please fill out full form");
+function fillFormAlert(newUser, newPass, newFirst, newLast){
+	if(!(newUser && newPass && newFirst && newLast)){
+		return alert("Please fill out full form");
+	} else return;
 }
+
+
+function passwordDoesntMatchAlert(){
+	if($("#js-password-submit").val() !== $("#js-retype-password").val() ){
+		return alert("Passwords don't match.");
+	} else return;
+}
+
+function passwordTooLongAlert(){
+	if($("#js-password-submit").val().length < 10){
+		return alert("Password is too short, must be more than 10 characters.");
+	} else return;
+}
+
+function passwordTooShortAlert(){
+	if($("#js-password-submit").val().length > 46){
+		alert("Password is too long, must be less than 42 characters");
+	} else return;
+}
+
+function usernameTakenAlert(){
+	if($("#js-username-submit") === false){
+		alert("Username Taken");
+	} else return;
+}
+
 
 function loginAlert(){
 	return alert("Missing username or password");
@@ -762,6 +815,7 @@ function postNewUserProfile(newUser, newFirst, newLast){
 			},
 			success: function(){
 				console.log('replacing');
+				$('#js-register-user-form').method = "POST"; 
 				window.location.replace('/login.html');
 			},
 			error: console.error('POST postNewUserProfile error')		
@@ -940,8 +994,8 @@ function postUserDrawn(_frameNumber, drawing, _title, _animationId, _artist, _cr
 				'Content-Type': 'application/json'
 			},
 		success: function(){
-				console.log('unbinding');
-				$("#js-artwork-form").unbind().submit();
+				window.location.replace('/dashboard.html');
+				// $("#js-artwork-form").unbind().submit();
 			},
 		error: console.error('POST userdrawn error')		
 	};
@@ -1010,7 +1064,7 @@ let imageSketch = function(p){
 
 	p.setup = function() {
 			p.createCanvas($("#js-artwork-thumb").width(), $("#js-artwork-thumb").width());
-			p.background(50, 800, 210);
+			p.background('#a7edff');
 
 			p.displayDrawing();
 			p.noLoop();
@@ -1064,37 +1118,53 @@ let imageSketch = function(p){
 
 let theatre = function(p){
 	let frameCount = 0;
+	// let initialWidth = $("#js-theatre-holder").width();
+	let canvasWidth = $("#js-theatre-holder").width();
+	let initialRadius = canvasWidth/20;
+
+	let colorSwatchRadius = canvasWidth/10;
+
 	let initialWidth = 1000;
-	let initialRadius = 50; 
+	let canvas;
+	// let initialRadius = 50; 
 
 	p.preload = function(){
 
 	}
 
 	p.windowResized = function(){
-		p.resizeCanvas($("#js-theatre-holder").width(), $("#js-theatre-holder").width());
+		p.resizeCanvas($("#js-theatre-holder").width(),$("#js-theatre-holder").width());
+		canvasWidth = $("#js-theatre-holder").width();
+		frameThickness = canvasWidth/10;
+		initialRadius = canvasWidth/20;
+		colorSwatchRadius = canvasWidth/10;
 	}
 
 
 	p.setup = function() {
-			let canvas  = p.createCanvas($("#js-theatre-holder").width(), $("#js-theatre-holder").width());
+			canvas  = p.createCanvas(canvasWidth, canvasWidth);
 			canvas.parent('#js-theatre-holder');
-
+			console.log('Frame is '+canvasWidth)
 			p.frameRate(12);
 
 	}
 
 	p.draw = function(){
-		p.background(50, 800, 210);
-		p.displayDrawing(userTheatre[frameCount].frame);
-		frameCount++;
-		if(frameCount > userTheatre.length-1) frameCount = 0;
+		p.background('#a7edff');
+		//if hoovering mouse over canvas, it will pause at frame mapped to mouse position vs canvas size
+		if(p.mouseX > 0 && p.mouseX < canvas.width && p.mouseY > 0 && p.mouseY < canvas.height){
+			let m = Math.floor(p.map(Math.floor(p.mouseX), 0, canvas.width, 0, userTheatre.length));
+			p.displayDrawing(userTheatre[m].frame);
+		} else {
+			p.displayDrawing(userTheatre[frameCount].frame);
+			frameCount++;
+			if(frameCount > userTheatre.length-1) frameCount = 0;
+		}
 	}
 
 	p.displayDrawing = function(frame){
 		if(userTheatre){
 			for (let i = 0; i < frame.length; i++) {
-
 		   		let lines = frame[i].lines;
 		   		let points = frame[i].points;
 				let weight = frame[i].radius;

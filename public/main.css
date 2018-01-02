@@ -26,17 +26,23 @@ header{
 	font-size: 50px;
 }
 
+
+header image{
+	width: 20px;
+}
+
 canvas {
 	margin: 0 auto;
 	display: block;
 	width: 100%;
 	height: auto;
 	position: relative;
+	text-align: center;
 }
 
 main{
 	background-color: #fff;
-	width: 1170px;
+	width: 50% !important;
 	margin: 0 auto;
 	position: relative;
 }
@@ -50,6 +56,14 @@ footer{
 footer a{
 	padding: 10px;
 	font-size: 20px;
+	transition: all .2s ease-in-out;
+
+}
+
+
+#js-lastName-submit, .register-input{
+	margin: 5px;
+
 }
 
 a:visited{
@@ -67,17 +81,43 @@ form{
 	padding: 15px;
 }
 
-
-a{
-	text-decoration: none;
-	color: #000;
-}
-
 a:hover{
-	font-weight: 700;
-	color: #000;
+	text-decoration: none;
 }
 
+footer a:hover{
+	/*font-weight: 700;*/
+	color: #000;
+	text-decoration: none;
+	transition: all .2s ease-in-out;
+	background-color: #FFCE2E;
+
+}
+
+a:active, footer a:active{
+	color: #fff;
+	text-decoration: none;
+	transition: all .2s ease-in-out;
+	background-color: #000;
+
+}
+
+#js-instructions{
+	background-color: #FFCE2E;
+	width: 100%;
+	font-size: 150%;
+	padding: 5px;
+	top: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	line-height: 130%;
+	text-align: center;
+	clear: both;
+}
+
+#js-instructions h2{
+	font-weight: 700;
+}
 
 #wrapper{
 	height: 100%;
@@ -210,7 +250,10 @@ a:hover{
 }
 /*///////*/
 
-
+#js-credits-holder{
+	max-height: 100%;
+	overflow-y: scroll;
+}
 
 #js-view-art{
 
@@ -224,10 +267,36 @@ a:hover{
 	display: inline-block;
 	padding: 5px;
 	position: relative;
-	border: 4px solid #000;
+	/*border: 4px solid #000;*/
 	border-left: ;
 	font-size: 1.5em;
 	margin-bottom: 10px;
+	text-align: center;
+	transition: all .2s ease-in-out;
+}
+
+@media only screen and (min-device-width : 1200px){
+	#dashboard-link, #settings-link{
+		text-decoration: none;
+		width: 20%;
+	}
+
+	#settings-link{
+		text-decoration: none;
+		width: 15%;
+	}
+}
+
+
+#dashboard-link a, #settings-link a{
+	text-decoration: none;
+	text-align: center;
+	color: #000;
+}
+#dashboard-link a:hover, #settings-link a:hover{
+	text-decoration: none;
+	text-align: center;
+	color: #000;
 }
 
 #dashboard-link{
@@ -241,6 +310,23 @@ a:hover{
 #dashboard-link:hover, #settings-link:hover{
 	background-color: #FFCE2E;
 	font-weight: normal;
+	text-decoration: none;
+	color: #000;
+}
+
+#dashboard-link:active, #settings-link:active{
+	background-color: #FFCE2E;
+	font-weight: normal;
+	text-decoration: none;
+	color: #fff;
+	background-color: #000;
+}
+
+#dashboard-link:hover a, #settings-link:hover a{
+	background-color: #FFCE2E;
+	font-weight: normal;
+	text-decoration: none;
+	color: #000;
 }
 
 #dashboard-link p{
@@ -252,11 +338,16 @@ a:hover{
 
 #js-sketch-holder{
 	width: 100%;
+	position: relative;
+	margin: 0 auto;
+	text-align: center;
 }
 
 
 #js-animation-info p{
 	text-align: center;
+	line-height: 30%;
+	margin-top: 10px;
 }
 
 #js-theatre-thumb, #js-artwork-thumb, #js-theatre-holder{
@@ -271,9 +362,8 @@ a:hover{
 	transform: translate(-50%, -50%);
 }
 
-#js-instructions{
-	text-align: center;
-	clear: both;
+#js-artwork-form{
+	padding: 0px;
 }
 
 #js-view-art{
@@ -294,15 +384,23 @@ a:hover{
 	transform: translate(-50%, -50%);
 }
 
-#js-artwork-clear{
-	margin: 0 auto;
+#js-artwork-clear, #js-artwork-submit, #js-title-form{
+	margin: 5px auto;
+	padding: 10px;
 	text-align: center;
+	position: relative;
+	display: inline-block;
+	background-color: #FFCE2E;
 }
 
 #js-delete-profile{
 	margin: 0 auto;
 	position: relative;
 	display: block;
+}
+
+#logo{
+	width:50%;
 }
 
 .square1, .square2{
@@ -349,8 +447,7 @@ a:hover{
 }
 
 .plack-white, .plack-black{
-		transition: all .2s ease-in-out;
-
+	transition: all .2s ease-in-out;
 }
 
 .plack-black, .plack-black-static{
