@@ -1,8 +1,11 @@
 {
-  "name": "artapp",
+  "name": "artlab",
   "version": "1.0.0",
   "description": "App for collaborative art and animation",
   "main": "index.js",
+  "engines": {
+    "node": "6.11.2"
+  },
   "scripts": {
     "test": "mocha --exit",
     "start": "node server.js"
