@@ -617,8 +617,10 @@ $(window).resize(function() {
 		$('.square2').css('border-width',`${sw/10}px`);
 		// let mainWidth = $(window).height()/1170;
 		// $('main').('width', mainWidth);
-		let sketchHolderWidth = $('#js-sketch-holder').width();
-		$('#js-sketch-holder').height(sketchHolderWidth);
+		// let sketchHolderWidth = $('#js-sketch-holder').width();
+		// $('#js-sketch-holder').height(sketchHolderWidth);
+		// $('#js-artwork-thumb').height(sketchHolderWidth);
+
 	});
 
 function runApp(){
@@ -1084,55 +1086,64 @@ function deleteUser(){
 $(runApp)
 
 let imageSketch = function(p){
+	let canvasWidth = $("#js-artwork-thumb").width();
+	let initialRadius = canvasWidth/20;
 	let initialWidth = 1000;
-	let initialRadius = 50; 
+
 	p.preload = function(){
+	
+	}
+
+	p.windowResized = function(){
+		canvasWidth = $("#js-artwork-thumb").width();
+		p.resizeCanvas(canvasWidth,canvasWidth);
+		initialRadius = canvasWidth/20;
 
 	}
 
-	p.setup = function() {
-			p.createCanvas($("#js-artwork-thumb").width(), $("#js-artwork-thumb").width());
-			p.background('#a7edff');
 
-			p.displayDrawing();
-			p.noLoop();
+	p.setup = function() {
+			p.createCanvas(canvasWidth, canvasWidth);
+			// p.background('#a7edff');
+
+			// p.displayDrawing();
+			//p.noLoop();
 			p.frameRate(15);
 	}
 
-	 p.windowResized = function(){
-	 	let w = $("#js-artwork-thumb").width();
-	 }
+	p.draw = function(){
+		p.background('#a7edff');
+
+		p.displayDrawing();
+
+	}
 
 	p.displayDrawing = function(){
 		if(userDrawing){
-
 			for (let i = 0; i < userDrawing.length; i++) {
-
 		   		let lines = userDrawing[i].lines;
 		   		let points = userDrawing[i].points;
 				let weight = userDrawing[i].radius;
-				let radiusRatio = $("#js-artwork-thumb").width()/initialWidth;
+				let radiusRatio = canvasWidth/initialWidth;
 				let weightMap = weight*radiusRatio;
-
 
 				if(lines){
 					for(let j = 0; j < lines.length; j++){
 						let c = userDrawing[i].color;
 						p.strokeWeight(weightMap);
 						p.stroke(c);
-						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						// p.line(lines[j].mouseX, lines[j].mouseY, lines[j].pmouseX, lines[j].pmouseY);
+						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, canvasWidth);
+						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, canvasWidth);
+						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, canvasWidth);
+						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, canvasWidth);
 						p.line(mXmap, mYmap, pXmap, pYmap);
 
 					}
 				}
 				if(points){
 					for(let j = 0; j < points.length; j++){
-						let mXmap = p.map(points[j].x, 0, initialWidth, 0, $("#js-artwork-thumb").width());
-						let mYmap = p.map(points[j].y, 0, initialWidth, 0, $("#js-artwork-thumb").width());
+						let mXmap = p.map(points[j].x, 0, initialWidth, 0, canvasWidth);
+						let mYmap = p.map(points[j].y, 0, initialWidth, 0, canvasWidth);
 						let c = userDrawing[i].color;
 						p.noStroke();
 						p.fill(c);
@@ -1149,9 +1160,6 @@ let theatre = function(p){
 	// let initialWidth = $("#js-theatre-holder").width();
 	let canvasWidth = $("#js-theatre-holder").width();
 	let initialRadius = canvasWidth/20;
-
-	let colorSwatchRadius = canvasWidth/10;
-
 	let initialWidth = 1000;
 	let canvas;
 	// let initialRadius = 50; 
@@ -1161,11 +1169,9 @@ let theatre = function(p){
 	}
 
 	p.windowResized = function(){
-		p.resizeCanvas($("#js-theatre-holder").width(),$("#js-theatre-holder").width());
-		canvasWidth = $("#js-theatre-holder").width();
-		frameThickness = canvasWidth/10;
+		canvasWidth = $("#js-artwork-thumb").width();
+		p.resizeCanvas(canvasWidth,canvasWidth);
 		initialRadius = canvasWidth/20;
-		colorSwatchRadius = canvasWidth/10;
 	}
 
 
@@ -1179,7 +1185,7 @@ let theatre = function(p){
 
 	p.draw = function(){
 		p.background('#a7edff');
-		//if hoovering mouse over canvas, it will pause at frame mapped to mouse position vs canvas size
+		//if hovering mouse over canvas, it will pause at frame mapped to mouse position vs canvas size
 		if(p.mouseX > 0 && p.mouseX < canvas.width && p.mouseY > 0 && p.mouseY < canvas.height){
 			let m = Math.floor(p.map(Math.floor(p.mouseX), 0, canvas.width, 0, userTheatre.length));
 			p.displayDrawing(userTheatre[m].frame);
@@ -1196,7 +1202,7 @@ let theatre = function(p){
 		   		let lines = frame[i].lines;
 		   		let points = frame[i].points;
 				let weight = frame[i].radius;
-				let radiusRatio = $("#js-theatre-holder").width()/initialWidth;
+				let radiusRatio = canvasWidth/initialWidth;
 				let weightMap = weight*radiusRatio;
 
 				if(lines){
@@ -1204,18 +1210,17 @@ let theatre = function(p){
 						let c = frame[i].color;
 						p.strokeWeight(weightMap);
 						p.stroke(c);
-						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						// p.line(lines[j].mouseX, lines[j].mouseY, lines[j].pmouseX, lines[j].pmouseY);
+						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, canvasWidth);
+						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, canvasWidth);
+						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, canvasWidth);
+						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, canvasWidth);
 						p.line(mXmap, mYmap, pXmap, pYmap);
 					}
 				}
 				if(points){
 					for(let j = 0; j < points.length; j++){
-						let mXmap = p.map(points[j].x, 0, initialWidth, 0, $("#js-theatre-holder").width());
-						let mYmap = p.map(points[j].y, 0, initialWidth, 0, $("#js-theatre-holder").width());
+						let mXmap = p.map(points[j].x, 0, initialWidth, 0, canvasWidth);
+						let mYmap = p.map(points[j].y, 0, initialWidth, 0, canvasWidth);
 						let c = frame[i].color;
 						p.noStroke();
 						p.fill(c);
