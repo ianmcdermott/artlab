@@ -60,12 +60,6 @@ footer a{
 
 }
 
-
-#js-lastName-submit, .register-input{
-	margin: 5px;
-
-}
-
 a:visited{
 	text-decoration: none;
 	color: #000;
@@ -100,6 +94,20 @@ a:active, footer a:active{
 	transition: all .2s ease-in-out;
 	background-color: #000;
 
+}
+
+#alert{
+	background-color: #f00;
+	color: #fff;
+	text-align: center;
+	font-size: 24px;
+	border-radius: 5px;
+	width: 80%;
+	margin: 0 auto;
+}
+
+#js-lastName-submit, .register-input{
+	margin: 10px;
 }
 
 #js-instructions{

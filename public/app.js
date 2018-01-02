@@ -710,8 +710,14 @@ function appendUserArtwork(data){
 
 
 function registerUser(){
-	$('#js-register-user-form').submit(function(event){
+	$("#js-password-submit").css('border', 'default');
+	$("#js-retype-password").css('border', 'default');
+	$("#js-username-submit").css('border', 'default');
 
+	$('#js-register-user-form').submit(function(event){
+		$("#alert").empty();
+		$("#alert").hide();
+		let registerBool = true;
 		event.preventDefault();
 		console.log('pword '+$("#js-password-submit").length)
 
@@ -725,42 +731,64 @@ function registerUser(){
 		passwordTooShortAlert();
 
 		//post new user and user profile
-			if(newUser && newPass && newFirst && newLast){
-				console.log('posting');
-				// postNewUser(newUser, newPass, newFirst, newLast);
-			}
+		if(newUser && newPass && newFirst && newLast && registerBool){
+			$("#js-password-submit").css('border', 'default');
+			$("#js-retype-password").css('border', 'default');
+			$("#js-username-submit").css('border', 'default');
+			postNewUser(newUser, newPass, newFirst, newLast);
+		}
 		
 	})
 }
 
 function fillFormAlert(newUser, newPass, newFirst, newLast){
+	registerBool = false;
 	if(!(newUser && newPass && newFirst && newLast)){
-		return alert("Please fill out full form");
+		$("#alert").append(`<p>Please fill out full form.</p>`);
 	} else return;
 }
 
 
 function passwordDoesntMatchAlert(){
+	registerBool = false;
+
 	if($("#js-password-submit").val() !== $("#js-retype-password").val() ){
-		return alert("Passwords don't match.");
+		$("#alert").append(`<p>Passwords don't match.</p>`);
+		$("#js-password-submit").css('border', '6px solid #f00');
+		$("#js-retype-password").css('border', '6px solid #f00');
+		$("#alert").show();
 	} else return;
 }
 
 function passwordTooLongAlert(){
+	registerBool = false;
+
 	if($("#js-password-submit").val().length < 10){
-		return alert("Password is too short, must be more than 10 characters.");
+		$("#js-password-submit").css('border', '6px solid #f00');
+		$("#alert").append(`<p>Password is too short, must be more than 10 characters.</p>`);
+		$("#alert").show();
+
 	} else return;
 }
 
 function passwordTooShortAlert(){
+	registerBool = false;
+
 	if($("#js-password-submit").val().length > 46){
-		alert("Password is too long, must be less than 42 characters");
+		$("#js-password-submit").css('border', '6px solid #f00');
+		$("#alert").append(`<p>Password is too long, must be less than 42 characters.</p>`);
+		$("#alert").show();
 	} else return;
 }
 
 function usernameTakenAlert(){
+	registerBool = false;
+
 	if($("#js-username-submit") === false){
-		alert("Username Taken");
+		$("#js-username-submit").css('border', '6px solid #f00');
+		$("#alert").append(`<p>Username Taken.</p>`);
+		$("#alert").show();
+
 	} else return;
 }
 

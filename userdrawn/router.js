@@ -11,8 +11,8 @@ mongoose.Promise = global.Promise;
 const {UserDrawn} = require('./models');
 
 const app = express();
-router.use(bodyParser.json({limit: '500mb'}));
-router.use(bodyParser.urlencoded({limit: '500mb', extended: true}));
+router.use(bodyParser.json({limit: '50mb'}));
+router.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
 
