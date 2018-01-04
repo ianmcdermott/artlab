@@ -26,11 +26,6 @@ header{
 	font-size: 50px;
 }
 
-
-header image{
-	width: 20px;
-}
-
 canvas {
 	margin: 0 auto;
 	display: block;
@@ -42,7 +37,7 @@ canvas {
 
 main{
 	background-color: #fff;
-	width: 50% !important;
+	width: 100% !important;
 	margin: 0 auto;
 	position: relative;
 }
@@ -96,14 +91,22 @@ a:active, footer a:active{
 
 }
 
-#alert{
+.alert{
 	background-color: #f00;
 	color: #fff;
 	text-align: center;
 	font-size: 24px;
 	border-radius: 5px;
 	width: 80%;
+	margin: 10px auto;
+}
+
+
+#js-logout{
 	margin: 0 auto;
+	position: relative;
+	display: block;
+	text-align: center;
 }
 
 #js-lastName-submit, .register-input{
@@ -315,11 +318,18 @@ a:active, footer a:active{
 	float: right;
 }
 
-#dashboard-link:hover, #settings-link:hover{
+#dashboard-link:hover{
 	background-color: #FFCE2E;
 	font-weight: normal;
 	text-decoration: none;
 	color: #000;
+}
+
+#settings-link:hover{
+	background-color: #000;
+	font-weight: normal;
+	text-decoration: none;
+	color: #FFCE2E;
 }
 
 #dashboard-link:active, #settings-link:active{
@@ -401,6 +411,8 @@ a:active, footer a:active{
 	background-color: #FFCE2E;
 }
 
+
+
 #js-delete-profile{
 	margin: 0 auto;
 	position: relative;
@@ -411,12 +423,27 @@ a:active, footer a:active{
 	width:50%;
 }
 
+#header-img{
+	width: 50%;
+	viewbox: 0 0 50 50;
+}
+
+.alert-color{
+	background-color: #f00;
+	color: #fff;
+	text-align: center;
+	font-size: 24px;
+	border-radius: 5px;
+	width: 80%;
+	margin: 10px auto;
+}
+
 .square1, .square2{
-	clear: right;
+	clear: both;
+	width: 100%;
 }
 
 .square1{
-	width: 50%;
 	background-color: #fff;
 	border: 10px solid #000;
 	color: #000;
@@ -426,10 +453,20 @@ a:active, footer a:active{
 	text-align: center;
 	float: left;
 	display: block;
+	width: 100%;
+}
+
+.square-holder{
+	width: 100%;
+	margin: 5px 0;
+	position: relative;
+	float: left;
+	display: block;	
+	clear: right;
+	padding: 0 !important; 
 }
 
 .square2{
-	width: 50%;
 	background-color: #000;
 	border: 10px solid #FFCE2E;
 	color: #fff;
@@ -442,20 +479,30 @@ a:active, footer a:active{
 }
 
 .square1 image, .square2 image{
-	margin: 0;
-	padding: 15px;
+	/*margin: 0;*/
+	/*padding: 15px;*/
 }
 
-.plack-white, .plack-black, .plack-black-static, .plack-white-static{
+.plack-black-static, .plack-white-static, .plack-white, .plack-black{
+	padding: 10px;
+	width: 100%;
+	margin: 5px auto;
+	position: relative;
+	top: 5px;
+	clear: both;
+	bottom: 5px;
+	display: relative;
+	text-align: center;
+}
+
+
+.plack-white, .plack-black{
+	transition: all .2s ease-in-out;
 	padding: 10px;
 	width: 60%;
 	margin: 0 auto;
 	bottom: 20px;
 	display: absolute;
-}
-
-.plack-white, .plack-black{
-	transition: all .2s ease-in-out;
 }
 
 .plack-black, .plack-black-static{
@@ -544,7 +591,7 @@ a:active, footer a:active{
 .centered{
 	text-align: center;
 	margin: 0 auto;
-	display: block;
+	/*display: block;*/
 }
 
 .center-flex{
@@ -563,7 +610,7 @@ a:active, footer a:active{
 
 .description{
 	width: 80%;
-	font-size: 30px;
+	font-size: 24px;
 	text-align: center;
 	margin: 0 auto;
 }

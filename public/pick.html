@@ -25,25 +25,32 @@
 </head>
 <body onload="renderGalleryAndShowcase();">
 	<div id="wrapper" >
-		<header role="banner" class="container"><image src="/media/artlab_logo.svg" alt="artlab logo" class="col-xl-12"></header>
+		<header role="banner" class="container">
+			<object data="media/artlab_logo.svg" alt="ARTLAB logo" type="image/svg+xml"></object>
+		</header>
 		<main role="main" class="container">
 			<a id="dashboard-link" href="dashboard.html" class="col-xl-3">User Dashboard</a>
 			<a id="settings-link" href="settings.html" class="col-xl-3">User Settings</a>
-			<div class="square1 col-xl-6">
-				<div  id="js-artwork-thumb"></div>
-				<div class="plack-white">
+			<div class="square-holder col-xl-6">
+				<div class="square1">
+					<div  id="js-artwork-thumb"></div>
+				</div>
+				<div class="plack-white col-xl-6">
 					<a href="gallery.html">
 						<h2>My Work</h2>
 					</a>
 				</div>
 			</div>
-			<div class="square2 col-xl-6">
-				<div  id="js-theatre-thumb"></div>
-				<div class="plack-black">
+			<div class="square-holder col-xl-6">
+				<div class="square2">
+					<div id="js-theatre-thumb"></div>
+				</div>
+				<div class="plack-black col-xl-6">
 					<a href="showcase.html">
 						<h2>Animations</h2>
 					</a>
 				</div>
+			</div>
 		</main>
 		<footer role="contentinfo">
 			<a href="canvas.html">Make Art</a>

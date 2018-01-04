@@ -19,19 +19,25 @@
 </head>
 <body onload="renderShowcase();">
 	<div id="wrapper">
-		<header role="banner" class="container"><image src="/media/artlab_logo.svg" alt="artlab logo" class="col-xl-12"></header>
+		<header role="banner" class="container">		
+			<object data="media/artlab_logo.svg" alt="ARTLAB logo" type="image/svg+xml"></object>
+		</header>
 		<main role="main" class="container">
 			<a id="dashboard-link" href="dashboard.html">User Dashboard</a>
 			<a id="settings-link" href="settings.html">User Settings</a>
-			<div class="square1 col-xl-6">				
-					<div id="js-credits-holder">
-						<p><u>Artists (in order of frames)</u></p>
-					</div>
-				<div id="js-artwork-thumb"></div>
-			</div>
-			<div class="square2 col-xl-6"> 
-				<div id="js-theatre-holder"></div>
-				<div class="plack-black-static"></div>
+			<div class="square-holder col-xl-6">
+				<div class="square2"> 
+					<div id="js-theatre-holder"></div>
+				</div>
+				<div class="plack-black-static col-xl-6"></div>
+			</div>		
+			<div class="square-holder col-xl-6">
+				<div class="square1">				
+						<div id="js-credits-holder">
+						</div>
+					<div id="js-artwork-thumb"></div>
+				</div>
+				<div class="plack-white-static col-xl-6">Artists<br>(in order of frames)</div>
 			</div>
 		</main>
 		<footer role="contentinfo">

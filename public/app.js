@@ -16,6 +16,7 @@ let userProfileId;
 let animationId;
 let frameNumber;
 let artist;
+let artworkId;
 
 // Update frame number in animations endpoint
 //Make sure frame number is properly added to post userdrawn
@@ -24,25 +25,6 @@ let artist;
 // put drawing to user profile endpoint after submit art  
 // Make sure grabbing random frame is working
 
-// •••• Alerts ••••  //
-function checkAlerts(){
-	switch(event){
-		case 0:
-			passwordDoesntMatchAlert();
-			break;
-		case 1:
-			passwordTooLongAlert();
-			break;
-		case 2:
-			passwordTooShortAlert();
-			break;
-		case 3:
-			usernameTakenAlert();
-			break;	
-		default:
-
-	}
-}
 
 // *Canvas* load guide image for the canvas and display canvas from sketch.js file
 function getAndDisplayGuideImage(){
@@ -54,7 +36,7 @@ function getAnimations(callback){
 	console.log('getAnimations ran');
 
 	const settings = {
-		url:  DATABASE_URL+`animations`,
+		url:  `/animations`,
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 		},
@@ -78,6 +60,25 @@ function prepCanvas(){
 	submitArtwork();
 }
 
+
+function renderGalleryAndShowcase(){
+	retrieveLocalStorage();
+
+	getAndRenderArtworkThumb();
+    getAndRenderAnimationThumb();
+}
+
+function renderGallery(){
+	retrieveLocalStorage();
+
+	getAndRenderArtworkThumb();
+	getAndRenderAnimationThumb();
+	getAndRenderArtworkInfo();
+	getAndRenderAnimationInfo();
+	$("#js-animation-info").prepend(`<p>Image featured in:</p>`)
+}
+
+
 function getGuideUrl(){
 	console.log('getGuideUrl ran');
 	getAnimations(returnRandomGuideUrl);
@@ -88,8 +89,6 @@ function returnRandomGuideUrl(data){
 	GUIDE_URL =  data.animations[r].guideUrl;
 	extendUserArtworkObject(data, r);
 }
-
-
 
 // *Canvas* GETs image for current guide from "guide image" key's array and displays through p5.js program
 function getGuide(callback){
@@ -174,13 +173,6 @@ function getSequence(requestedId, callback){
 
 // GET and return value of framecount in sequence object
 
-function renderGallery(){
-	retrieveLocalStorage();
-	getAndRenderArtworkThumb();
-	getAndRenderAnimationThumb();
-	getAndRenderArtworkInfo();
-	getAndRenderAnimationInfo();
-}
 
 function getAndRenderArtworkThumb(){
 	getArtworkByUserId(renderArtworkThumb);
@@ -235,8 +227,8 @@ function getArtworkByUserId(callback){
 function getArtworkByAnimationId(callback, AID){
 	console.log('getArtworkByAnimationId ran '+DATABASE_URL+`userdrawn/`+AID);
 	const settings = {
-		url:  DATABASE_URL+`userdrawn/`,
-		data: {animationId: AID},
+		url:  `/userdrawn/`,
+		data: {animationId: userArtworkObject.id},
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 		},
@@ -261,26 +253,21 @@ function renderArtworkThumb(data){
 		console.log('no data');
 	}
 }
-//<p class='js-artwork-title'>${data.userProfile[0].artwork[0].title}</p>
-
-
 
 function getAndRenderAnimationThumb(){
 	getArtwork(renderAnimationThumb);
 }
+
 function renderAnimationThumb(data){
 	console.log('renderAnimationThumb ran');
 	let randomFrame = Math.floor(Math.random()*data.userdrawn.length); 
 
 	userDrawing = data.userdrawn[randomFrame].frame;
-
 	//load user drawing into its own object to be more easily accessible in p5 code
 	new p5(imageSketch, "js-theatre-thumb");
 }
 
-
-
-function getAndRenderAnimation(chosenAnimation){
+function getAndRenderAnimation(){
 	console.log("getAndRenderAnimation ran")
 	getArtworkByAnimationId(renderAnimation, chosenAnimation);
 }
@@ -309,7 +296,7 @@ function getAndRenderArtworkInfo(){
 function getArtworkInfo(callback){
 	console.log("getArtworkInfo ran!!");
 	const settings = {
-		url:  DATABASE_URL+`userprofile/`+ username,
+		url:  `/userprofile/`+ username,
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 		},
@@ -323,6 +310,7 @@ function getArtworkInfo(callback){
 }
 
 function renderArtworkInfo(data){
+	animationId = data.artwork[0]
 	$('#js-artwork-info').html(`
 		<p>by ${data.userprofile[0].name}</p>
 		<p>Created on: ${data.artwork[0].date}</p>`);
@@ -331,7 +319,10 @@ function renderArtworkInfo(data){
 function renderShowcase(){
 	console.log('renderShowcase ran');
 	retrieveLocalStorage();
-	getAndRenderAnimation(animationId);
+	animationId = getRandomAnimation();
+	getRandomAnimation
+	console.log('rand animation id: '+animationId);
+	getAndRenderAnimation();
 	getAndRenderAnimationInfo();
 }
 
@@ -343,9 +334,9 @@ function getAndRenderAnimationInfo(){
 
 
 function getAnimationInfoById(callback){
-	console.log('getAnimationInfoById ran')
+	console.log('!!!getAnimationInfoById ran!!!'+animationId)
 	const settings = {
-		url:  DATABASE_URL+`animations/	`+animationId,
+		url:  `/animations/	`+ animationId,
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 		},
@@ -356,7 +347,7 @@ function getAnimationInfoById(callback){
 }
 
 function renderAnimationInfo(data){
-	console.log('renderAnimationInfo ran')
+	console.log('renderAnimationInfo ran!!!')
 	let lastDD = new Date(data.lastDrawnDate).toDateString();
 	$('.plack-black-static').append(`
 		<div id="js-animation-info">
@@ -438,7 +429,6 @@ function getAnimationInfo(callback){
 		error: "Error getting playlist"
 	};
 	$.ajax(settings);
-	//setTimeout(callback(MOCK_SEQUENCE_UPDATES), 100);
 }
 
 function gatherAnimationInfo(data){
@@ -447,16 +437,18 @@ function gatherAnimationInfo(data){
 	 	title : data.animations[0].title, 
 	 	lastDrawnDate : data.animations[0].lastDrawnDate,
 		lastFrame: data.animations[0].lastFrame,
-	});
-
-	//getRandomAnimation();
-		
+	});		
 }
 
-// function getRandomAnimation(){ 
-// 	console.log("getRandomAnimation ran");
-// 	getAnimations(extendUserArtworkObject);
-// }
+function getRandomAnimation(){ 
+ 	console.log("getRandomAnimation ran");
+ 	getRandomAnimationFromUser();
+ 	// getAnimations(extendUserArtworkObject);
+}
+
+function 	getRandomAnimationFromUser(){
+ 		getUserId(returnRandomAnimation)
+ 	}
 
 function extendUserArtworkObject(data, r){
 	console.log("extendUserArtworkObject ran");
@@ -502,7 +494,7 @@ function renderUserInfo(data){
 function putArtworkUserProfile(callback, userID, artworkTitle, animationId){
 	console.log('putArtwork ran' + drawing);	
 	const settings = {
-		url: DATABASE_URL + 'userprofile/' + userID,
+		url: 'userprofile/' + userArtworkObject.id,
 		method: 'PUT',
 			data: JSON.stringify({
 				"id": userID,
@@ -557,7 +549,7 @@ function putArtworkAnimations(){
 function postArtworkSequences(callback, userID, artworkTitle, animationId){
 	console.log('putArtwork ran');	
 	const settings = {
-		url: DATABASE_URL + 'userprofile/' + userID,
+		url: '/userprofile/' + userID,
 		method: 'POST',
 			data: JSON.stringify({
 				"id": userID,
@@ -583,11 +575,6 @@ function postArtworkSequences(callback, userID, artworkTitle, animationId){
 	return false;
 }
 
-function renderGalleryAndShowcase(){
-	retrieveLocalStorage();
-	getAndRenderArtworkThumb();
-    getAndRenderAnimationThumb();
-}
 
 function renderImage(data){
 	$('#js-view-gallery').append(`data.`);
@@ -639,6 +626,11 @@ function retrieveLocalStorage(){
 	userProfileId = localStorage.getItem('userProfileId');
 	artist = localStorage.getItem('artist');
 	animationId = localStorage.getItem('animationId');
+		console.log('retrieveLocalStorage!!!!' + animationId);
+
+	if(!username){
+		window.location.replace('login.html');
+	}
 }
 
 function retrieveUsernameFromLocalStorage(){
@@ -652,30 +644,42 @@ function retrieveUserArtworkObject(){
 
 /// CANVAS POSTING FUNCTIONS ///
 function submitArtwork(){
-	$('#js-artwork-form').submit(function(event){
+	$('#js-artwork-form').on('submit', function(event){
 		event.preventDefault();
 		createUserdrawnObject();
 		//putArtworkAnimations()
 		updateAnimationObject(userArtworkObject.animationId, (Number(userArtworkObject.frameCount)+1));
-
 		//get artwork object in userprofile, append, and put back in 
-		getAndUpdateUserProfile
 	});
 }
 
 function getAndUpdateUserProfile(){
 	console.log('getAndUpdateUP ran');
-	getUserId(appendUserArtworkAndAnimations);
-	getArtworkByDateAndTitle(appendUserArtwork, _creationDate, _title);
+	getUserId(appendUserAnimations);
+	getUserId(appendUserArtwork);
+	// getArtworkByDateAndTitle(appendUserArtwork, _creationDate, _title);
+	// window.location.replace('/dashboard.html');
+}
+
+function returnRandomAnimation(data){
+	let randomAnimationIndex = Math.floor(Math.random()*data.userprofile[0].animations.length);
+	console.log('returning:'+data.userprofile[0].animations[randomAnimationIndex]);
+	return data.userprofile[0].animations[randomAnimationIndex];
 }
 
 function appendUserAnimations(data){
-	let updatedAnimations = data.animations.append(animationId);
+	console.log('appendUserAnimations ran');
+	let updatedAnimations = data.userprofile[0].animations;
+	console.log('animation id is '+animationId);
+	updatedAnimations.push(animationId);
+	console.log('updatedAnimations  is '+updatedAnimations);
 
+	// updatedAnimations.push(animationId);
 	const settings = {
-		url: DATABASE_URL + 'userprofile/' + userId,
+		url: '/userprofile/' + userId,
 		method: 'PUT',
 			data: JSON.stringify({
+				"id": "5a42f6916062e314ccc00de6",
 				"animations": updatedAnimations
 			}),
 			dataType: 'json',
@@ -683,7 +687,7 @@ function appendUserAnimations(data){
 				'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 				'Content-Type': 'application/json'
 			},
-			success: console.log('success PUT animation'),
+			success: console.log('success PUT animation'+updatedAnimations[0]),
 			error: console.error('PUT drawing error')		
 	};
 	$.ajax(settings);
@@ -691,12 +695,13 @@ function appendUserAnimations(data){
 
 
 function appendUserArtwork(data){
-	let updatedArtwork = data.id.append(artworkId);
-
+	let updatedArtwork = data.userprofile[0].artwork.push(artworkId);
+	console.log('appendUserArtwork ran');
 	const settings = {
-		url: DATABASE_URL + 'userprofile/' + userId,
+		url: '/userprofile/' + userId,
 		method: 'PUT',
 			data: JSON.stringify({
+				"id": "5a42f6916062e314ccc00de6",
 				"artwork": updatedArtwork,
 			}),
 			dataType: 'json',
@@ -743,6 +748,7 @@ function registerUser(){
 	})
 }
 
+// •••• Alerts ••••  //
 function fillFormAlert(newUser, newPass, newFirst, newLast){
 	registerBool = false;
 	if(!(newUser && newPass && newFirst && newLast)){
@@ -796,7 +802,9 @@ function usernameTakenAlert(){
 
 
 function loginAlert(){
-	return alert("Missing username or password");
+	$("#js-login-username").css('border', '6px solid #f00');
+	$("#js-login-password").css('border', '6px solid #f00');
+	$('#js-login-user-form').append(`<div class="alert"><p>Incorrect username or password</p></div>`);
 }
 
 
@@ -854,24 +862,48 @@ function postNewUserProfile(newUser, newFirst, newLast){
 }
 
 function loginUser(){
-	$('#js-login-user-form').submit(function(event){
-		event.preventDefault();
-		const un = $("#js-login-username").val();
-		username = un;
-		localStorage.username = username;
+	if(localStorage.username){
+		window.location.replace('dashboard.html');
+	} else {
+		$('#js-login-user-form').on('submit', function(event){
+			event.preventDefault();
+			$(".alert").remove();
+			const un = $("#js-login-username").val().trim();
+			username = un;
+			localStorage.username = username;
 
-		const pw = $("#js-login-password").val();
-
-		if(un && pw){
+			const pw = $("#js-login-password").val();
 			postUserLogin(storeAuth, un, pw);
-		}else {
-			loginAlert();
-		}
+		})
+	}
+}
+
+function userSettings(){
+	logOut();
+	deleteProfile();
+	$("#js-logout").on('click', function(){
+			console.log('User settings')
+
+		localStorage.clear();
+		window.location.replace('login.html')
 	})
 }
 
+function logOut(){
+
+	$("#js-logout").on('submit', function(){
+			console.log('User settings')
+
+		localStorage.clear();
+		window.location.replace('login.html')
+	})
+}
+
+
 //user makes POST to login get JWT
 function postUserLogin(callback, un, pw){
+	console.log(un);
+
 	const settings = {
 		url: DATABASE_URL + 'api/auth/login',
 		method: 'POST',
@@ -884,7 +916,12 @@ function postUserLogin(callback, un, pw){
 				'Content-Type': 'application/json'
 			},
 			success: callback,
-			error: console.error('error POST postUserLogin')		
+			timeout: 10000,
+			error: function(){
+
+				console.log('error fool');
+				loginAlert();
+				}	
 	};
 	$.ajax(settings);	
 }
@@ -894,14 +931,12 @@ function storeAuth(data){
 	AUTHORIZATION_CODE = data.authToken;
 	localStorage.auth = data.authToken;
 	window.location.replace('/dashboard.html');
-
-//	$("#js-login-user-form").unbind().submit();
 }
 
 function getUserId(callback){
 	retrieveUsernameFromLocalStorage();
 	const settings = {	
-		url: DATABASE_URL + 'userprofile/',
+		url: '/userprofile/',
 		data: {username: username},
 		method: 'GET',
 		dataType: 'json',
@@ -911,7 +946,7 @@ function getUserId(callback){
 
 		},
 		success: callback,
-		error: console.error('error GET getUserId')		
+		error: console.error('error GET getUserId'+username)		
 	};
 
 	$.ajax(settings);
@@ -936,6 +971,7 @@ function createUserdrawnObject(){
 	// POST creationDate
 	let creationDate = new Date();
 	if(drawing[0]){
+		// getAndUpdateUserProfile();
 		postUserDrawn(frameNumber, drawing, title, animationId, artist, creationDate, userId);
 	} else {
 		drawingAlert();
@@ -1023,8 +1059,11 @@ function postUserDrawn(_frameNumber, drawing, _title, _animationId, _artist, _cr
 				'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 				'Content-Type': 'application/json'
 			},
-		success: function(){
-				window.location.replace('/dashboard.html');
+		success: function(data){
+			console.log('data is'+data);
+				artworkId = data._id;
+				getAndUpdateUserProfile();
+				
 				// $("#js-artwork-form").unbind().submit();
 			},
 		error: console.error('POST userdrawn error')		
@@ -1089,6 +1128,7 @@ let imageSketch = function(p){
 	let canvasWidth = $("#js-artwork-thumb").width();
 	let initialRadius = canvasWidth/20;
 	let initialWidth = 1000;
+	let responsiveRatio = initialWidth/canvasWidth;
 
 	p.preload = function(){
 	
@@ -1107,7 +1147,7 @@ let imageSketch = function(p){
 			// p.background('#a7edff');
 
 			// p.displayDrawing();
-			//p.noLoop();
+			p.noLoop();
 			p.frameRate(15);
 	}
 
@@ -1163,6 +1203,7 @@ let theatre = function(p){
 	let initialWidth = 1000;
 	let canvas;
 	// let initialRadius = 50; 
+	let responsiveRatio = initialWidth/canvasWidth;
 
 	p.preload = function(){
 

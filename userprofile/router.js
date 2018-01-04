@@ -52,9 +52,8 @@ router.get('/', jwtAuth, (req, res) => {
 
 router.get('/', jwtAuth, (req, res) => {
 	const filters = {};
-	const queryFields = ["animationId", "artistId", "creationDate", "title"];
+	const queryFields = ["animationId", "artistId", "creationDate", "title", "username"];
 	queryFields.forEach(field => {
-		if(field == "artistId") console.log('HI! 	'+field+":"+req.query[field]);
 		if(req.query[field]){
 			filters[field] = req.query[field];
 		}

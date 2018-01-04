@@ -25,21 +25,25 @@
 </head>
 <body onload="getUserId(populateDashboard);">
 	<div id="wrapper" >
-		<header role="banner" class="container"><image src="/media/artlab_logo.svg" alt="artlab logo" class="col-xl-12"></header>
+		<header role="banner" class="container">			<object data="media/artlab_logo.svg" alt="ARTLAB logo" type="image/svg+xml"></object></header>
 		<main role="main" class="container">
 			<div id="js-user-header" class="col-xl-12" ></div>
-			<!-- <div id="js-user-info"></div> -->
-			<div class="square1 col-xl-6" >
-				<div id="js-make-art">
-					<div class="center-flex">
-						<a href="canvas.html"><h2>Make Art</h2></a>
+			<a id="settings-link" href="settings.html" class="col-xl-3">User Settings</a>
+			<div class="square-holder col-xl-6">
+				<div class="square1" >
+					<div id="js-make-art">
+						<div class="center-flex">
+							<a href="canvas.html"><h2>Make Art</h2></a>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="square2 col-xl-6">
-				<div id="js-artwork-thumb"></div>
-				<div id='js-view-art'>
-					<a href="pick.html" ><h2>View Art</h2></a>
+			<div class="square-holder col-xl-6">
+				<div class="square2">
+					<div id="js-artwork-thumb"></div>
+					<div id='js-view-art'>
+						<a href="pick.html" ><h2>View Art</h2></a>
+					</div>
 				</div>
 			</div>
 		</main>
