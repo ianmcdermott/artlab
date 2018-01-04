@@ -654,7 +654,7 @@ function getAndUpdateUserProfile(){
 	getUserId(appendUserAnimations);
 	getUserId(appendUserArtwork);
 	// getArtworkByDateAndTitle(appendUserArtwork, _creationDate, _title);
-	// window.location.replace('/dashboard.html');
+	window.location.replace('pick.html');
 }
 
 function returnRandomAnimation(data){
@@ -852,7 +852,7 @@ function postNewUserProfile(newUser, newFirst, newLast){
 			success: function(){
 				console.log('replacing');
 				$('#js-register-user-form').method = "POST"; 
-				window.location.replace('/login.html');
+				window.location.replace('login.html');
 			},
 			error: console.error('POST postNewUserProfile error')		
 	};
