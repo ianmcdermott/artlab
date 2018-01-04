@@ -1125,8 +1125,8 @@ $(runApp)
 let imageSketch = function(p){
 	let canvasWidth = $("#js-artwork-thumb").width();
 	let initialRadius = canvasWidth/20;
-	let initialWidth = 1000;
-	let responsiveRatio = initialWidth/canvasWidth;
+	let maxWidth = 1110;
+	let responsiveRatio = maxWidth/canvasWidth;
 
 	p.preload = function(){
 	
@@ -1162,7 +1162,7 @@ let imageSketch = function(p){
 		   		let lines = userDrawing[i].lines;
 		   		let points = userDrawing[i].points;
 				let weight = userDrawing[i].radius;
-				let radiusRatio = canvasWidth/initialWidth;
+				let radiusRatio = canvasWidth/maxWidth;
 				let weightMap = weight*radiusRatio;
 
 				if(lines){
@@ -1170,18 +1170,18 @@ let imageSketch = function(p){
 						let c = userDrawing[i].color;
 						p.strokeWeight(weightMap);
 						p.stroke(c);
-						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, canvasWidth);
-						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, canvasWidth);
-						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, canvasWidth);
-						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, canvasWidth);
+						let mXmap = p.map(lines[j].mouseX, 0, maxWidth, 0, canvasWidth);
+						let mYmap = p.map(lines[j].mouseY, 0, maxWidth, 0, canvasWidth);
+						let pXmap = p.map(lines[j].pmouseX, 0, maxWidth, 0, canvasWidth);
+						let pYmap = p.map(lines[j].pmouseY, 0, maxWidth, 0, canvasWidth);
 						p.line(mXmap, mYmap, pXmap, pYmap);
 
 					}
 				}
 				if(points){
 					for(let j = 0; j < points.length; j++){
-						let mXmap = p.map(points[j].x, 0, initialWidth, 0, canvasWidth);
-						let mYmap = p.map(points[j].y, 0, initialWidth, 0, canvasWidth);
+						let mXmap = p.map(points[j].x, 0, maxWidth, 0, canvasWidth);
+						let mYmap = p.map(points[j].y, 0, maxWidth, 0, canvasWidth);
 						let c = userDrawing[i].color;
 						p.noStroke();
 						p.fill(c);
@@ -1195,13 +1195,13 @@ let imageSketch = function(p){
 
 let theatre = function(p){
 	let frameCount = 0;
-	// let initialWidth = $("#js-theatre-holder").width();
+	// let maxWidth = $("#js-theatre-holder").width();
 	let canvasWidth = $("#js-theatre-holder").width();
 	let initialRadius = canvasWidth/20;
-	let initialWidth = 1000;
+	let maxWidth = 1110;
 	let canvas;
 	// let initialRadius = 50; 
-	let responsiveRatio = initialWidth/canvasWidth;
+	let responsiveRatio = maxWidth/canvasWidth;
 
 	p.preload = function(){
 
@@ -1241,7 +1241,7 @@ let theatre = function(p){
 		   		let lines = frame[i].lines;
 		   		let points = frame[i].points;
 				let weight = frame[i].radius;
-				let radiusRatio = canvasWidth/initialWidth;
+				let radiusRatio = canvasWidth/maxWidth;
 				let weightMap = weight*radiusRatio;
 
 				if(lines){
@@ -1249,17 +1249,17 @@ let theatre = function(p){
 						let c = frame[i].color;
 						p.strokeWeight(weightMap);
 						p.stroke(c);
-						let mXmap = p.map(lines[j].mouseX, 0, initialWidth, 0, canvasWidth);
-						let mYmap = p.map(lines[j].mouseY, 0, initialWidth, 0, canvasWidth);
-						let pXmap = p.map(lines[j].pmouseX, 0, initialWidth, 0, canvasWidth);
-						let pYmap = p.map(lines[j].pmouseY, 0, initialWidth, 0, canvasWidth);
+						let mXmap = p.map(lines[j].mouseX, 0, maxWidth, 0, canvasWidth);
+						let mYmap = p.map(lines[j].mouseY, 0, maxWidth, 0, canvasWidth);
+						let pXmap = p.map(lines[j].pmouseX, 0, maxWidth, 0, canvasWidth);
+						let pYmap = p.map(lines[j].pmouseY, 0, maxWidth, 0, canvasWidth);
 						p.line(mXmap, mYmap, pXmap, pYmap);
 					}
 				}
 				if(points){
 					for(let j = 0; j < points.length; j++){
-						let mXmap = p.map(points[j].x, 0, initialWidth, 0, canvasWidth);
-						let mYmap = p.map(points[j].y, 0, initialWidth, 0, canvasWidth);
+						let mXmap = p.map(points[j].x, 0, maxWidth, 0, canvasWidth);
+						let mYmap = p.map(points[j].y, 0, maxWidth, 0, canvasWidth);
 						let c = frame[i].color;
 						p.noStroke();
 						p.fill(c);

@@ -20,6 +20,9 @@ let frameThickness = $("#js-sketch-holder").width()/10;
 let canvasWidth = $("#js-sketch-holder").width();
 let initialRadius = canvasWidth/20;
 let colorSwatchRadius = canvasWidth/10;
+let maxWidth = 1110;
+
+let responsiveRatio = maxWidth/canvasWidth;
 
 let strokeI;
 let img;
@@ -44,13 +47,14 @@ function windowResized() {
 	frameThickness = canvasWidth/10;
 	initialRadius = canvasWidth/20;
 	colorSwatchRadius = canvasWidth/10;
-	
+	let responsiveRatio = maxWidth/canvasWidth;
+
 	for(let i = 0; i < numColor; i++){
 		swatches[i].resize(((i*colorSwatchRadius)+colorSwatchRadius/2), 
 												  colorSwatchRadius/2, 
 												  colorSwatchRadius/2)
 	}
-	fillIcon.resize(canvasWidth-frameThickness*.75, canvasWidth/40, canvasWidth/20)
+	fillIcon.resize(canvasWidth-frameThickness*.75, canvasWidth/40, canvasWidth/20);
 }
 
 function setup() {
@@ -73,10 +77,11 @@ function setup() {
 
 function draw() {
 	background(eraser);
+	initialRadius = canvasWidth/20;
+
+	responsiveRatio = maxWidth/canvasWidth;
 	('image is '+ guideList[0]);
-	//set guide image
-	//let frameNum = fc;//Math.floor(map(mouseX, 0, 1200, 0, 300));
-	// frameNumString = stringifyFrameNumber(frameNum);
+	//set guide image within the frame
 	image(img, frameThickness, frameThickness, canvasWidth*.8,  canvasWidth*.8);
 	//set frame
 	displayDrawing();
@@ -102,14 +107,14 @@ function displayDrawing(){
 		for (let i = 0; i < drawing.length; i++) {
 	   		let lines = drawing[i].lines;
 	   		let points = drawing[i].points;
-			let weight = drawing[i].radius;
+			let weight = drawing[i].radius/responsiveRatio;
 
 			if(lines){
 				for(let j = 0; j < lines.length; j++){
 					let c = drawing[i].color;
 					strokeWeight(weight);
 					stroke(c);
-					line(lines[j].mouseX, lines[j].mouseY, lines[j].pmouseX, lines[j].pmouseY);
+					line(lines[j].mouseX/responsiveRatio, lines[j].mouseY/responsiveRatio, lines[j].pmouseX/responsiveRatio, lines[j].pmouseY/responsiveRatio);
 				}
 			}
 			if(points){
@@ -117,7 +122,7 @@ function displayDrawing(){
 					let c = drawing[i].color;
 					noStroke();
 					fill(c);
-					ellipse(points[j].x, points[j].y, weight, weight);
+					ellipse(points[j].x/responsiveRatio, points[j].y/responsiveRatio, weight, weight);
 				}
 			}
 		}
@@ -310,11 +315,16 @@ class Brush{
 			color: this.path.color,
 			radius: this.radius
 		};
+
 		if(isDrawing){
 			let weight = this.r+constrain(dist(mouseX, mouseY, pmouseX, pmouseY), 0, 25);
-			let lineCoords = {mouseX: this.x, mouseY: this.y, pmouseX, pmouseY};
+			let mx = this.x*responsiveRatio;
+			let my = this.y*responsiveRatio;
+			let pmx = pmouseX*responsiveRatio;
+			let pmy = pmouseY*responsiveRatio;
+			let lineCoords = {mouseX: mx, mouseY: my, pmouseX: pmx, pmouseY: pmy};
 			this.path.lines.push(lineCoords);
-			this.path.radius = weight;
+			this.path.radius = weight*responsiveRatio;
 			this.path.color = fillIcon.c;
 
 			if(releasedMouse){
@@ -335,9 +345,9 @@ class Brush{
 			radius: this.r
 		};
 		//if(isDrawing){
-			this.path.points.push({x: this.x, y: this.y});
+			this.path.points.push({x: (this.x*responsiveRatio), y: (this.y*responsiveRatio)});
 			this.path.color = fillIcon.c;
-			this.path.radius = this.r;
+			this.path.radius = this.r*responsiveRatio;
 
 			drawing.push(this.path);
 			//releasedMouse = false;
