@@ -319,15 +319,12 @@ function renderArtworkInfo(data){
 function renderShowcase(){
 	console.log('renderShowcase ran');
 	retrieveLocalStorage();
-	animationId = getRandomAnimation();
-	getRandomAnimation
-	console.log('rand animation id: '+animationId);
-	getAndRenderAnimation();
-	getAndRenderAnimationInfo();
+	getRandomAnimationFromUser();
+
 }
 
 function getAndRenderAnimationInfo(){
-	console.log('getAndRenderAnimationInfo ran')
+	console.log('getAndRenderAnimationInfo ran' + animationId)
 	getAnimationInfoById(renderAnimationInfo);	
 }
 
@@ -441,13 +438,12 @@ function gatherAnimationInfo(data){
 }
 
 function getRandomAnimation(){ 
- 	console.log("getRandomAnimation ran");
- 	getRandomAnimationFromUser();
+ 	return getRandomAnimationFromUser();
  	// getAnimations(extendUserArtworkObject);
 }
 
-function 	getRandomAnimationFromUser(){
- 		getUserId(returnRandomAnimation)
+function getRandomAnimationFromUser(){
+ 		return getUserId(returnRandomAnimation)
  	}
 
 function extendUserArtworkObject(data, r){
@@ -664,7 +660,9 @@ function getAndUpdateUserProfile(){
 function returnRandomAnimation(data){
 	let randomAnimationIndex = Math.floor(Math.random()*data.userprofile[0].animations.length);
 	console.log('returning:'+data.userprofile[0].animations[randomAnimationIndex]);
-	return data.userprofile[0].animations[randomAnimationIndex];
+	animationId = data.userprofile[0].animations[randomAnimationIndex];
+	getAndRenderAnimation();
+	getAndRenderAnimationInfo();
 }
 
 function appendUserAnimations(data){
