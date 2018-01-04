@@ -224,8 +224,8 @@ function getArtworkByUserId(callback){
 	$.ajax(settings);
 }
 
-function getArtworkByAnimationId(callback, AID){
-	console.log('getArtworkByAnimationId ran '+DATABASE_URL+`userdrawn/`+AID);
+function getArtworkByAnimationId(callback){
+	console.log('getArtworkByAnimationId ran '+DATABASE_URL+`userdrawn/`+userArtworkObject.id);
 	const settings = {
 		url:  `/userdrawn/`,
 		data: {animationId: userArtworkObject.id},
@@ -269,7 +269,7 @@ function renderAnimationThumb(data){
 
 function getAndRenderAnimation(){
 	console.log("getAndRenderAnimation ran")
-	getArtworkByAnimationId(renderAnimation, chosenAnimation);
+	getArtworkByAnimationId(renderAnimation);
 }
 
 function sortByFrameNumber(a,b) {
