@@ -1,4 +1,3 @@
-# artlab
 <h1>ARTLAB</h1>
 
 <h2>Summary</h2>
