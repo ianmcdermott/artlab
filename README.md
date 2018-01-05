@@ -5,16 +5,6 @@ ARTLAB is a collaborative animation app that also acts as a graphics-software te
 
 ![image of dashboard](https://github.com/ianmcdermott/artlab/blob/master/reference/screenshots/dashboard.png)
 
-<h2>Functionality</h2>
-<p>This app's functionality includes:</p>
-<ul>
-	<li></li>
-	<li></li>
-	<li></li>
-	<li></li>
-	<li></li>
-</ul>
-
 <h2>Technology</h2>
 <p>On the backend, ARTLAB utilizes a RESTful API, using Node.js. On the front end, all of the magic happens through the p5.js library!</p>
 <h3>Front End</h3>
@@ -47,7 +37,7 @@ ARTLAB is a collaborative animation app that also acts as a graphics-software te
 </ul>
 
 <h2>Working Prototype</h2>
-<p>A working prototype of this app can be viewed at <a href="https://radiant-scrubland-40519.herokuapp.com/showcase.html">https://radiant-scrubland-40519.herokuapp.com/showcase.html</a></p>
+<p>A working prototype of this app can be viewed at <a href="https://radiant-scrubland-40519.herokuapp.com/login.html">https://radiant-scrubland-40519.herokuapp.com/login.html</a></p>
 
 <h2>Development</h2>
 <p>Future updates will include:</p>
