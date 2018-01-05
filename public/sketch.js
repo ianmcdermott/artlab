@@ -1,3 +1,5 @@
+// Drawing Application by Ian McDermott
+// Copyright (c) 2018 Ian McDermott
 
 let x = 0;
 let creamsicle = '#ffb241';
@@ -26,13 +28,12 @@ let responsiveRatio = maxWidth/canvasWidth;
 
 let strokeI;
 let img;
-// let pg;
 
 let isDrawing = false;
 let releasedMouse = false;
 
 let guideList = [];
-let fc =0;
+let fc = 0;
 let displayOn = true; 
 
 function preload(){
@@ -41,6 +42,7 @@ function preload(){
 	img = loadImage(GUIDE_URL+frameNum+EXTENSION);
 }
 
+// Adjustments to make window resize responsive
 function windowResized() {
   	resizeCanvas($("#js-sketch-holder").width(),$("#js-sketch-holder").width());
 	canvasWidth = $("#js-sketch-holder").width();
@@ -61,11 +63,11 @@ function setup() {
 	let canvas  = createCanvas(canvasWidth, canvasWidth);
 	canvas.parent('js-sketch-holder');
 	noStroke();
-	// fill(255);
-	// rect(100, 100, 1000, 1000);
-	brush = new Brush(initialRadius, defaultSwatch);
-		console.log(guideList.length);
 
+	// Instantiate brush
+	brush = new Brush(initialRadius, defaultSwatch);
+
+	// Attach buttons
 	let submitButton = select('#js-artwork-submit');
 	let clearButton  = select('#js-artwork-clear');
 	clearButton.mousePressed(clearDrawing);
@@ -80,7 +82,6 @@ function draw() {
 	initialRadius = canvasWidth/20;
 
 	responsiveRatio = maxWidth/canvasWidth;
-	('image is '+ guideList[0]);
 	//set guide image within the frame
 	image(img, frameThickness, frameThickness, canvasWidth*.8,  canvasWidth*.8);
 	//set frame
@@ -96,12 +97,12 @@ function draw() {
 	}
 }
 
-
+// Stringify number for guide URL
 function stringifyFrameNumber(n){
 	return (('0000'+n).slice(-5));
 }
 
-
+// Display the drawing
 function displayDrawing(){
 	if(drawing){
 		for (let i = 0; i < drawing.length; i++) {
@@ -129,6 +130,7 @@ function displayDrawing(){
 	}
 }
 
+//Creates the pallet for drawing, adds fill icon
 function createPallet(){
 	for(let i = 0; i < numColor; i++){
 		swatches.push(new ColorSwatch(	((i*colorSwatchRadius)+colorSwatchRadius/2), 
@@ -136,19 +138,18 @@ function createPallet(){
 																colorSwatchRadius/2, 
 																    colorArray[i]));
 	}
-
-	//strokeIcon = new Str5okeIcon(1125, 30, 40);
 	fillIcon = new FillIcon(canvasWidth-frameThickness*.75, canvasWidth/40, canvasWidth/20);
 }
 
+// Render color selections of pallet
 function renderPallet(){
 	for(let i = 0; i < numColor; i++){
 		swatches[i].display();
 	}
-	//strokeIcon.display();
 	fillIcon.display();
 }
 
+// Create frame around canvas - pallet goes on top 
 function frame(){
 	//FRAME DEBUG
 		// noFill();
@@ -166,23 +167,27 @@ function frame(){
 	rect(canvasWidth-frameThickness, 0, frameThickness, canvasWidth);
 }
 
+// Activate the brush if mouse dragged
 function mouseDragged() {
 	if(mouseX > frameThickness && mouseX < canvasWidth-frameThickness && mouseY > frameThickness && mouseY <  canvasWidth-frameThickness){
+		//"Turn on" drawing
 		isDrawing = true;
 		releasedMouse = false;
 		brush.drag(mouseX, mouseY);
+		//hide mouse if dragging
 		displayOn = false;
 		return false;
 	}
 }
 
+//When mouse released, show brush and "turn off" drawing 
 function mouseReleased(){
 	releasedMouse = true;
 	displayOn = true;
-
 	isDrawing = false;
 }
 
+// If mouse clicked, create an ellipse the size of brush
 function mouseClicked(){
 	isDrawing = true;
 	for(let i = 0; i < numColor; i++){
@@ -193,6 +198,7 @@ function mouseClicked(){
 	}
 }
 
+// Resize brush functions
 function keyPressed(){
 	if(key === 'Ý'){
 		if(keyIsDown(SHIFT)){
@@ -208,6 +214,7 @@ function keyPressed(){
 			brush.sizeDown(1);
 		}
 	}
+
 	if(key === 'e' || key === 'E'){
 	}
 
@@ -216,6 +223,7 @@ function keyPressed(){
 
 }
 
+// Create colorswatch
 function ColorSwatch(_x, _y, _r, _c){
 	this.x = _x;
 	this.y = _y;
@@ -236,6 +244,7 @@ function ColorSwatch(_x, _y, _r, _c){
 		}
 	}
 
+	// Scale/translate if window is resizing
 	this.resize = function(_x, _y, _r){
 		this.x = _x;
 		this.y = _y;
@@ -243,6 +252,7 @@ function ColorSwatch(_x, _y, _r, _c){
 	}
 }
 
+// Icon parent class using stroke and fill icons as descendents 
 class Icon{
 	constructor(_x, _y, _r){
 		this.x = _x;
@@ -262,7 +272,7 @@ class Icon{
 	}
 }
 
-
+// Stroke icon descendant of icon class
 class StrokeIcon extends Icon{
 	display(){
 		stroke(this.c);
@@ -272,6 +282,7 @@ class StrokeIcon extends Icon{
 	}
 }
 
+// Fill icon descendant of icon class
 class FillIcon extends Icon{
 	display(){
 		fill(this.c);	
@@ -280,6 +291,7 @@ class FillIcon extends Icon{
 	}
 }
 
+//Brush class
 class Brush{
  	constructor( _r, _c){
  		this.r = _r;
@@ -365,15 +377,7 @@ class Brush{
 
 }
 
-
+// Clear the drawing object, thereby clearing displayed drawing
 function clearDrawing() {
   drawing = [];
 }
-
-// class Eraser extends Brush{
-// 	constructor(_r, _c){
-// 		super(this.r) = _r;
-// 		super(this.c) = fill(255);
-// 	}
-// }
-

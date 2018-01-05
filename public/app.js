@@ -6,7 +6,6 @@ let username;
 let userId;
 
 let AUTHORIZATION_CODE;
-DATABASE_URL = '/';
 
 let GUIDE_URL;
 const EXTENSION = '.png'
@@ -25,16 +24,7 @@ let artworkId;
 // put drawing to user profile endpoint after submit art  
 // Make sure grabbing random frame is working
 
-
-// *Canvas* load guide image for the canvas and display canvas from sketch.js file
-function getAndDisplayGuideImage(){
-	console.log('getAndDisplayGuideImage ran');
-	getAnimations(displayGuideImage);
-}
-
 function getAnimations(callback){
-	console.log('getAnimations ran');
-
 	const settings = {
 		url:  `/animations`,
 		headers: {
@@ -46,13 +36,8 @@ function getAnimations(callback){
 	$.ajax(settings)
 }
 
-function displayGuideImage(data){
-	console.log('displayGuideImage ran');
-	$("body").append(`<script src="sketch.js" type="text/javascript"></script>`);
-	new p5();
-}
-
-
+// ***** // ***** // Page Load Functions // ***** // ***** // 
+// Load/prep the canvas.html page
 function prepCanvas(){
 	$("#js-artwork-clear").click(event => event.preventDefault());
 	retrieveLocalStorage();
@@ -60,17 +45,16 @@ function prepCanvas(){
 	submitArtwork();
 }
 
-
+// Render gallery and showcase for pick.html page
 function renderGalleryAndShowcase(){
 	retrieveLocalStorage();
-
 	getAndRenderArtworkThumb();
     getAndRenderAnimationThumb();
 }
 
+// Render gallery for gallery.html page
 function renderGallery(){
 	retrieveLocalStorage();
-
 	getAndRenderArtworkThumb();
 	getAndRenderAnimationThumb();
 	getAndRenderArtworkInfo();
@@ -78,12 +62,66 @@ function renderGallery(){
 	$("#js-animation-info").prepend(`<p>Image featured in:</p>`)
 }
 
+// Render animation and credits for showcase.html page
+function renderShowcase(){
+	retrieveLocalStorage();
+	getRandomAnimationFromUser();
+}
 
+// Load userSettings on settings page
+function loadUserSettings(){
+	logOut();
+	deleteProfile();
+	//listen for click of logout button
+	$("#js-logout").on('click', function(){
+		localStorage.clear();
+		window.location.replace('login.html')
+	})
+}
+
+// Register user
+function registerUser(){
+	// Reset alert borders
+
+	$("#js-password-submit").css('border', 'default');
+	$("#js-retype-password").css('border', 'default');
+	$("#js-username-submit").css('border', 'default');
+	$(".alert").hide();
+
+	//listen for register user form submit
+	$('#js-register-user-form').submit(function(event){
+		$(".alert").empty();
+		$(".alert").hide();
+		let registerBool = true;
+		event.preventDefault();
+
+		let newUser = $('#js-username-submit').val();
+		let newPass = $('#js-password-submit').val();
+		let newFirst = $('#js-firstName-submit').val();
+		let newLast = $('#js-lastName-submit').val();
+		fillFormAlert(newUser, newPass, newFirst, newLast);
+		passwordDoesntMatchAlert();
+		passwordTooLongAlert();
+		passwordTooShortAlert();
+
+		//post new user and user profile
+		if(newUser && newPass && newFirst && newLast && registerBool){
+			// Reset alert borders
+			$("#js-password-submit").css('border', 'default');
+			$("#js-retype-password").css('border', 'default');
+			$("#js-username-submit").css('border', 'default');
+			// Post new user to users endpoint
+			postNewUser(newUser, newPass, newFirst, newLast);
+		}	
+	})
+}
+
+// Get url for guide image
 function getGuideUrl(){
-	console.log('getGuideUrl ran');
 	getAnimations(returnRandomGuideUrl);
 }
 
+// Renturn a guide selected randomly from animations
 function returnRandomGuideUrl(data){
 	let r = Math.floor(Math.random()*data.animations.length)
 	GUIDE_URL =  data.animations[r].guideUrl;
@@ -94,95 +132,34 @@ function returnRandomGuideUrl(data){
 function getGuide(callback){
 	const settings = {
 	 	contentType: "application/json",
-		url:  DATABASE_URL+`sequences`,
+		url:  `/sequences`,
 		success: callback,
 		error: callback(null)//"Error getting playlist"
 	};
 	$.ajax(settings);
 }
 
-function returnGuide(data){
-	return data.sequences[0].guide;
-}
-
-function displayGuide(data){
-	return data['guide-frames'][data['drawn-frames'].length];
-}
-
-// *Canvas* POSTs to endpoint (Used for image on SEQUENCE and USER endpoints and ||title input|| to USER endpoint) 
-
-
-// *Canvas* GETs "animationID" from ANIMATION endpoint and uses it to match "ID" found in sequence endpoint and POST to "drawn-frames" and "credits" keys 
-function getAnimationID(callback){
-	setTimeout(function(){callback()}, 100);
-}
-
-function returnAnimationId(data){
-	return data.id;
-}
-
-// *Canvas* GETs animation ID to POST it to user's "artwork" key's "animationID" to endpoint (Used for image on SEQUENCE and USER endpoints and ||title input|| to USER endpoint) 
-
-
-// *User Profile Settings* || Delete My Account || button is clicked and:
-function deleteSelected(){
-	$('#deleteAccountBtn').on('click', function(){
-		const deletedUser = getUsername();
-		deleteUser(deletedUser);
-		anomymizeUser(deletedUser);
-	});
-}
-
-function deleteUser(user){
-	setTimeout(function(){}, 100)
-}
-
-// *User Profile Settings* gets username from user profile endpoint and anonymizes user name from SEQUENCE Endpoint
-function anonymizeUser(user){
-	getUsername(updateUserCredits);
-}
-
-function updateUserCredits(data){
-	if(data.username = sequence.credits.username){
-		updateSequence.username;
-	}
-	$('#credits').html;
-}
-
+// Render credits to showcase page
 function renderCredits(data){
 	for(i = 0; i < data.length; i++){
-		console.log(data[i].artist);
 		$("#js-credits-holder").append(`<p>${data[i].artist}</p>`);
 	}
 }
 
-//gets sequence and renders to p5js theatre
-function getSequenceAndRender(){
-	const animationId = getAnimationID(returnAnimationId)
-	getSequence(animationId, renderTheatre);
-}
-
-//*Animation Showcase* GETs image sequence and posts in canvas players? made in p5.js
-function getSequence(requestedId, callback){
-	getSequence.forEach(item => {
-		if(item.id === requestedId){
-			setTimeout(function(){ callback(MOCK_SEQUENCE_UPDATES)})
-		}
-	})	
-}
-
-// GET and return value of framecount in sequence object
-
-
+// Get and render the artwork thumb
 function getAndRenderArtworkThumb(){
 	getArtworkByUserId(renderArtworkThumb);
 }
 
+// Get and render the animation thumb
+function getAndRenderAnimationThumb(){
+	getArtwork(renderAnimationThumb);
+}
 
+// Get artwork from userdrawn endpoint
 function getArtwork(callback){
-	console.log('getArtwork ran');
 	const settings = {
-		url:  DATABASE_URL+`userdrawn`,
+		url:  `/userdrawn/`,
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 		},
@@ -192,10 +169,10 @@ function getArtwork(callback){
 	$.ajax(settings);
 }
 
+// Get artwork using date and title params
 function getArtworkByDateAndTitle(callback, _date, _title){
-	console.log('getArtwork ran');
 	const settings = {
-		url:  DATABASE_URL+`userdrawn`,
+		url:  `/userdrawn`,
 		data: {
 			"creationDate": _date,
 			"title": _title
@@ -209,11 +186,10 @@ function getArtworkByDateAndTitle(callback, _date, _title){
 	$.ajax(settings);
 }
 
-
+// Get artwork by user Id
 function getArtworkByUserId(callback){
-	console.log('getArtworkByUserId ran '+userProfileId);
 	const settings = {
-		url:  DATABASE_URL+`userdrawn/`,
+		url: `/userdrawn/`,
 		data: {artistId: userProfileId},
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
@@ -224,8 +200,8 @@ function getArtworkByUserId(callback){
 	$.ajax(settings);
 }
 
+// Get artwork by its animation Id
 function getArtworkByAnimationId(callback){
-	console.log('getArtworkByAnimationId ran '+DATABASE_URL+`userdrawn/`+userArtworkObject.id);
 	const settings = {
 		url:  `/userdrawn/`,
 		data: {animationId: userArtworkObject.id},
@@ -238,6 +214,7 @@ function getArtworkByAnimationId(callback){
 	$.ajax(settings);
 }
 
+// Render the artwork thumb
 function renderArtworkThumb(data){
 	let rand = Math.floor(Math.random()*data.userdrawn.length)
 	let cDate = new Date(data.userdrawn[rand].creationDate).toDateString();
@@ -254,32 +231,18 @@ function renderArtworkThumb(data){
 	}
 }
 
-function getAndRenderAnimationThumb(){
-	getArtwork(renderAnimationThumb);
-}
-
+// Render the animation thumb
 function renderAnimationThumb(data){
-	console.log('renderAnimationThumb ran');
 	let randomFrame = Math.floor(Math.random()*data.userdrawn.length); 
-
 	userDrawing = data.userdrawn[randomFrame].frame;
 	//load user drawing into its own object to be more easily accessible in p5 code
 	new p5(imageSketch, "js-theatre-thumb");
 }
 
+// Get and render the animation
 function getAndRenderAnimation(){
-	console.log("getAndRenderAnimation ran")
 	getArtworkByAnimationId(renderAnimation);
 }
-
-function sortByFrameNumber(a,b) {
-  if (a.frameNumber < b.frameNumber)
-     return -1;
-  if (a.frameNumber > b.frameNumber)
-    return 1;
-  return 0;
-}
-
 
 //renders animation using data from userdrawn endpoint
 function renderAnimation(data){
@@ -288,13 +251,22 @@ function renderAnimation(data){
 	renderCredits(userTheatre);
 }
 
+// In case database entries get mixed, up, sort each entry by their frame number
+function sortByFrameNumber(a,b) {
+  if (a.frameNumber < b.frameNumber)
+     return -1;
+  if (a.frameNumber > b.frameNumber)
+    return 1;
+  return 0;
+}
 
+// Retrieve and render artwork info
 function getAndRenderArtworkInfo(){
 	getArtworkInfo(renderArtworkInfo);
 }
 
+// Get artwork info from user's profile by username
 function getArtworkInfo(callback){
-	console.log("getArtworkInfo ran!!");
 	const settings = {
 		url:  `/userprofile/`+ username,
 		headers: {
@@ -302,13 +274,13 @@ function getArtworkInfo(callback){
 		},
 		success: function(data){
 			callback(data);
-			console.log("hello");
 		},
 		error: "Error getting userprofile info"
 	};
 	$.ajax(settings);
 }
 
+// Render artwork info to js-artwork-info div 
 function renderArtworkInfo(data){
 	animationId = data.artwork[0]
 	$('#js-artwork-info').html(`
@@ -316,22 +288,13 @@ function renderArtworkInfo(data){
 		<p>Created on: ${data.artwork[0].date}</p>`);
 }
 
-function renderShowcase(){
-	console.log('renderShowcase ran');
-	retrieveLocalStorage();
-	getRandomAnimationFromUser();
-
-}
-
+// Get and render animation info by Id
 function getAndRenderAnimationInfo(){
-	console.log('getAndRenderAnimationInfo ran' + animationId)
 	getAnimationInfoById(renderAnimationInfo);	
 }
 
-
-
+// Get animation info by Id
 function getAnimationInfoById(callback){
-	console.log('!!!getAnimationInfoById ran!!!'+animationId)
 	const settings = {
 		url:  `/animations/	`+ animationId,
 		headers: {
@@ -343,8 +306,8 @@ function getAnimationInfoById(callback){
 	$.ajax(settings);
 }
 
+// Render animation info to .place-black-static class
 function renderAnimationInfo(data){
-	console.log('renderAnimationInfo ran!!!')
 	let lastDD = new Date(data.lastDrawnDate).toDateString();
 	$('.plack-black-static').append(`
 		<div id="js-animation-info">
@@ -356,7 +319,6 @@ function renderAnimationInfo(data){
 
 // *User Dashboard* GETs username, first/last name, and one random artwork to display on profile
 function populateDashboard(data){
-	console.log('populateDashboard ran');
 	getAndGatherArtistInfo();
 	retrieveLocalStorage();
 	getAndRenderUsername();
@@ -364,21 +326,15 @@ function populateDashboard(data){
 	getAndRenderArtworkThumb();
 }
 
-function getAndRenderUserThumb(){
-	getArtworkByUserId(renderUserThumb);
-}
-
 //Gets data from userprofile endpoint, adds to userArtworkObject
 function getAndGatherArtistInfo(){
 	getUserProfile(gatherArtistInfo);
 }
 
-
 //Gets user profile based on username
 function getUserProfile(callback){
-	console.log('getUserProfilerunning::'+ username);
 	const settings = {
-		url:  DATABASE_URL+`userprofile/`,
+		url: `/userprofile/`,
 		data: {username: username},
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
@@ -389,47 +345,41 @@ function getUserProfile(callback){
 	$.ajax(settings);
 }
 
-// Adds username, id, and name to userArtworkObject
+// Adds username, id, artist name, and userprofile id to userArtworkObject
 function gatherArtistInfo(data){
-	console.log(JSON.stringify(data));
 	userProfileId = data.id;
 	localStorage.userProfileId = data.userprofile[0].id;
 	localStorage.artist = data.userprofile[0].name;
-	console.log('gatherArtistInfo running'+data.userprofile[0].id);
 	$.extend(userArtworkObject, {
 		id: data.userprofile[0].id,
 	    username: data.userprofile[0].username,
 	    artist: data.userprofile[0].name,
 	    userProfileId: data.userprofile[0].id
 	});
-
-
 	//Use that info to get animation info and add to userArtworkObject
 	getAndGatherAnimationInfo();
-	// return userProfileObject;
 }
-
-
+// Get and Gather Animation info
 function getAndGatherAnimationInfo(){
 	getAnimationInfo(gatherAnimationInfo);
 }
 
+// Get Animation info from animations endpoint
 function getAnimationInfo(callback){
-	console.log('getAnimationInfo ran');
 	const settings = {
-		url:  DATABASE_URL+`animations`,
+		url:  `/animations`,
 		contentType: "application/json",
 		headers: {
 			'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 		},
 		success: callback,
-		error: "Error getting playlist"
+		error: console.log("Error getting animation info")
 	};
 	$.ajax(settings);
 }
 
+// Add animation info to userArtworkObject
 function gatherAnimationInfo(data){
-	console.log('gatherAnimationInfo ran '+ data.animations[0].title);
 	$.extend(userArtworkObject, {
 	 	title : data.animations[0].title, 
 	 	lastDrawnDate : data.animations[0].lastDrawnDate,
@@ -437,17 +387,13 @@ function gatherAnimationInfo(data){
 	});		
 }
 
-function getRandomAnimation(){ 
- 	return getRandomAnimationFromUser();
- 	// getAnimations(extendUserArtworkObject);
+// Get a random animation from the userprofile endpoint and return a random animation id
+function getRandomAnimationFromUser(){
+ 	getUserId(returnRandomAnimation)
 }
 
-function getRandomAnimationFromUser(){
- 		return getUserId(returnRandomAnimation)
- 	}
-
+// Add animationId and framecount to user artwork object after getting animation from userprofiles endpoint
 function extendUserArtworkObject(data, r){
-	console.log("extendUserArtworkObject ran");
 	animationId = data.animations[r].id;
 	frameNumber = data.animations[r].frameCount;
 	localStorage.animationId = animationId;
@@ -455,40 +401,18 @@ function extendUserArtworkObject(data, r){
 	   animationId: animationId,
 	   frameCount: frameNumber
 	});
-	console.log("userArtworkObject::"+JSON.stringify(userArtworkObject));
 	localStorage.userArtworkObject = userArtworkObject;
 
 	new p5();
 }
 
-function getUserInfo(callback){
-	console.log('getUsername running');
-	const settings = {
-		url:  DATABASE_URL+`userprofile`,
-		success: callback,
-		error: "Error getting userprofile info"
-	};
-
-	$.ajax(settings);
-}
-
-
+// Render the username to #js-user-header div
 function renderUsername(data){
-	console.log('renderUsername running');
-	console.log(JSON.stringify(data.userprofile[0].name));
 	$('#js-user-header').html(`<p>Welcome ${data.userprofile[0].name}`);
 }
 
-function renderUserInfo(data){
-	console.log('renderUserInfo running');
-	$('#js-userinfo').html(data.userprofile[0].username);
-}
-
-
-
 //PUT new art on user profile to update image for thumbnail display purposes
 function putArtworkUserProfile(callback, userID, artworkTitle, animationId){
-	console.log('putArtwork ran' + drawing);	
 	const settings = {
 		url: 'userprofile/' + userArtworkObject.id,
 		method: 'PUT',
@@ -517,9 +441,8 @@ function putArtworkUserProfile(callback, userID, artworkTitle, animationId){
 
 //PUT new art on animation to update image for thumbnail display purposes
 function putArtworkAnimations(){
-	console.log('putArtwork ran');	
 	const settings = {
-		url: DATABASE_URL + 'animations/' + animationId,
+		url: '/animations/' + animationId,
 		method: 'PUT',
 			data: JSON.stringify({
 				"frameCount": frameNumber,
@@ -543,7 +466,6 @@ function putArtworkAnimations(){
 
 //POST new art to sequences endpoint
 function postArtworkSequences(callback, userID, artworkTitle, animationId){
-	console.log('putArtwork ran');	
 	const settings = {
 		url: '/userprofile/' + userID,
 		method: 'POST',
@@ -561,146 +483,48 @@ function postArtworkSequences(callback, userID, artworkTitle, animationId){
 				'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 				'Content-Type': 'application/json'
 			},
-			success: function(){
-				callback;
-				console.log('success!');
-			},
+			success: callback,
 			error: console.error('PUT drawing error')		
 	};
 	$.ajax(settings);
-	return false;
-}
-
-
-function renderImage(data){
-	$('#js-view-gallery').append(`data.`);
-}
-
-
-
-
-function handleCss(){
-	let sw = $('.square1').width();
-		$('.square1').height(sw);
-		$('.square2').height(sw);
-		$('.square1').css('border-width',`${sw/10}px`);
-		$('.square2').css('border-width',`${sw/10}px`);
-		// $('#js-animation-thumb').width('100%');
-		// $('#js-artwork-thumb').width('100%');
-		$('canvas').height(sw*.95);
-		$('canvas').width(sw*.95);
-		$('canvas').css('margin', sw/100);
-}
-
-$(window).resize(function() {
-		let sw = $('.square1').width();
-		$('.square1').height(sw);
-		$('.square2').height(sw);
-		$('.square1').css('border-width',`${sw/10}px`);
-		$('.square2').css('border-width',`${sw/10}px`);
-		// let mainWidth = $(window).height()/1170;
-		// $('main').('width', mainWidth);
-		// let sketchHolderWidth = $('#js-sketch-holder').width();
-		// $('#js-sketch-holder').height(sketchHolderWidth);
-		// $('#js-artwork-thumb').height(sketchHolderWidth);
-
-	});
-
-function runApp(){
-	handleCss();
-	loadAuthToken();
-}
-
-function loadAuthToken(){
-	AUTHORIZATION_CODE = localStorage.getItem('auth');
-}
-
-function retrieveLocalStorage(){
-	AUTHORIZATION_CODE = localStorage.getItem('auth');
-	username = localStorage.getItem('username');
-	userEndpointId = localStorage.getItem('userEndpointId');
-	userProfileId = localStorage.getItem('userProfileId');
-	artist = localStorage.getItem('artist');
-	animationId = localStorage.getItem('animationId');
-		console.log('retrieveLocalStorage!!!!' + animationId);
-
-	if(!username){
-		window.location.replace('login.html');
-	}
-}
-
-function retrieveUsernameFromLocalStorage(){
-	username = localStorage.getItem('username');
-}
-
-
-function retrieveUserArtworkObject(){
-	userArtworkObject = localStorage.getItem('userArtworkObject');
 }
 
 /// CANVAS POSTING FUNCTIONS ///
+// Submit artwork data to DB on click of canvas.html's submit button
 function submitArtwork(){
 	$('#js-artwork-form').on('submit', function(event){
 		event.preventDefault();
 		createUserdrawnObject();
-		//putArtworkAnimations()
 		updateAnimationObject(userArtworkObject.animationId, (Number(userArtworkObject.frameCount)+1));
-		//get artwork object in userprofile, append, and put back in 
 	});
 }
 
+// Get and update the user profile with new animation and artwork ID
 function getAndUpdateUserProfile(){
-	console.log('getAndUpdateUP ran');
 	getUserId(appendUserAnimations);
-	getUserId(appendUserArtwork);
-	// getArtworkByDateAndTitle(appendUserArtwork, _creationDate, _title);
+	// getUserId(appendUserArtwork);
 	window.location.replace('pick.html');
 }
 
+// Return a random animation from user profile's animation property
 function returnRandomAnimation(data){
 	let randomAnimationIndex = Math.floor(Math.random()*data.userprofile[0].animations.length);
-	console.log('returning:'+data.userprofile[0].animations[randomAnimationIndex]);
-	animationId = data.userprofile[0].animations[randomAnimationIndex];
+	// animationId = data.userprofile[0].animations[randomAnimationIndex];
 	getAndRenderAnimation();
 	getAndRenderAnimationInfo();
 }
 
+// Append user Animations id's to property at userprofile endpoint
 function appendUserAnimations(data){
-	console.log('appendUserAnimations ran');
-	let updatedAnimations = data.userprofile[0].animations;
-	console.log('animation id is '+animationId);
-	updatedAnimations.push(animationId);
-	console.log('updatedAnimations  is '+updatedAnimations);
-
-	// updatedAnimations.push(animationId);
+	// append animations array after getting it from userprofile endpoint
+	let updatedAnimations = data.userprofile[0].animations.push(animationId);
+	// And put it back 
 	const settings = {
 		url: '/userprofile/' + userId,
 		method: 'PUT',
 			data: JSON.stringify({
-				"id": "5a42f6916062e314ccc00de6",
+				"id": userId,
 				"animations": updatedAnimations
-			}),
-			dataType: 'json',
-			headers: {
-				'Authorization': "Bearer "+ AUTHORIZATION_CODE,
-				'Content-Type': 'application/json'
-			},
-			success: console.log('success PUT animation'+updatedAnimations[0]),
-			error: console.error('PUT drawing error')		
-	};
-	$.ajax(settings);
-}
-
-
-function appendUserArtwork(data){
-	let updatedArtwork = data.userprofile[0].artwork.push(artworkId);
-	console.log('appendUserArtwork ran');
-	const settings = {
-		url: '/userprofile/' + userId,
-		method: 'PUT',
-			data: JSON.stringify({
-				"id": "5a42f6916062e314ccc00de6",
-				"artwork": updatedArtwork,
 			}),
 			dataType: 'json',
 			headers: {
@@ -713,40 +537,31 @@ function appendUserArtwork(data){
 	$.ajax(settings);
 }
 
-
-function registerUser(){
-	$("#js-password-submit").css('border', 'default');
-	$("#js-retype-password").css('border', 'default');
-	$("#js-username-submit").css('border', 'default');
-
-	$('#js-register-user-form').submit(function(event){
-		$("#alert").empty();
-		$("#alert").hide();
-		let registerBool = true;
-		event.preventDefault();
-		console.log('pword '+$("#js-password-submit").length)
-
-		let newUser = $('#js-username-submit').val();
-		let newPass = $('#js-password-submit').val();
-		let newFirst = $('#js-firstName-submit').val();
-		let newLast = $('#js-lastName-submit').val();
-		fillFormAlert(newUser, newPass, newFirst, newLast);
-		passwordDoesntMatchAlert();
-		passwordTooLongAlert();
-		passwordTooShortAlert();
-
-		//post new user and user profile
-		if(newUser && newPass && newFirst && newLast && registerBool){
-			$("#js-password-submit").css('border', 'default');
-			$("#js-retype-password").css('border', 'default');
-			$("#js-username-submit").css('border', 'default');
-			postNewUser(newUser, newPass, newFirst, newLast);
-		}
-		
-	})
-}
+// // Append user's artwork id's to property at userprofile endpoint
+// function appendUserArtwork(data){
+// 	// append artwork array after getting it from userprofile endpoint
+// 	let updatedArtwork = data.userprofile[0].artwork.push(artworkId);
+// 	// And put it back 
+// 	const settings = {
+// 		url: '/userprofile/' + userId,
+// 		method: 'PUT',
+// 			data: JSON.stringify({
+// 				"id": userId,
+// 				"artwork": updatedArtwork,
+// 			}),
+// 			dataType: 'json',
+// 			headers: {
+// 				'Authorization': "Bearer "+ AUTHORIZATION_CODE,
+// 				'Content-Type': 'application/json'
+// 			},
+// 			success: console.log('success PUT animation'),
+// 			error: console.error('PUT drawing error')		
+// 	};
+// 	$.ajax(settings);
+// }
 
 // •••• Alerts ••••  //
+// Form empty alert
 function fillFormAlert(newUser, newPass, newFirst, newLast){
 	registerBool = false;
 	if(!(newUser && newPass && newFirst && newLast)){
@@ -754,7 +569,7 @@ function fillFormAlert(newUser, newPass, newFirst, newLast){
 	} else return;
 }
 
-
+//Not matching passwords alert
 function passwordDoesntMatchAlert(){
 	registerBool = false;
 
@@ -766,6 +581,7 @@ function passwordDoesntMatchAlert(){
 	} else return;
 }
 
+//Password too long alert
 function passwordTooLongAlert(){
 	registerBool = false;
 
@@ -777,6 +593,7 @@ function passwordTooLongAlert(){
 	} else return;
 }
 
+// Password too short alert
 function passwordTooShortAlert(){
 	registerBool = false;
 
@@ -787,6 +604,7 @@ function passwordTooShortAlert(){
 	} else return;
 }
 
+// Username already taken alert
 function usernameTakenAlert(){
 	registerBool = false;
 
@@ -798,20 +616,22 @@ function usernameTakenAlert(){
 	} else return;
 }
 
-
+//Login user alert
 function loginAlert(){
 	$("#js-login-username").css('border', '6px solid #f00');
 	$("#js-login-password").css('border', '6px solid #f00');
 	$('#js-login-user-form').append(`<div class="alert"><p>Incorrect username or password</p></div>`);
 }
 
+// Alert if no drawing has been made
+function drawingAlert(){
+	return alert("Draw Something First!");
+}
 
+//Post a new user to api/users endpoint
 function postNewUser(newUser, newPass, newFirst, newLast){
-	console.log('postNewUser ran '+newUser);	
-					console.log(DATABASE_URL + 'api/users')
-
 	const settings = {
-		url: DATABASE_URL + 'api/users',
+		url: '/api/users',
 		method: 'POST',
 			data: JSON.stringify({
 				"username": newUser,
@@ -824,33 +644,30 @@ function postNewUser(newUser, newPass, newFirst, newLast){
 				'Content-Type': 'application/json'
 			},
 			success: function(){
-				console.log(DATABASE_URL + '/api/users')
 				postNewUserProfile(newUser, newFirst, newLast);
 			},
 			error: console.error('POST postNewUser error')		
 	};
 	$.ajax(settings);
 }
-//When clicking to make new art, get a random animation, and populate artwork object with animation id/last frame
 
+//Post a new user to the userprofiles endpoint
 function postNewUserProfile(newUser, newFirst, newLast){
-	console.log('postNewUserProfile ran '+newUser);	
 	const settings = {
-		url: DATABASE_URL + 'userprofile',
+		url: '/userprofile',
 		method: 'POST',
 			data: JSON.stringify({
 				"username": newUser,
 				"firstName": newFirst,
 				"lastName": newLast,
-				"artwork": [""],
-				"animations": [""]
+				"artwork": [],
+				"animations": []
 			}),
 			dataType: 'json',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			success: function(){
-				console.log('replacing');
 				$('#js-register-user-form').method = "POST"; 
 				window.location.replace('login.html');
 			},
@@ -859,8 +676,10 @@ function postNewUserProfile(newUser, newFirst, newLast){
 	$.ajax(settings);
 }
 
+// Login the user
 function loginUser(){
 	if(localStorage.username){
+		//sign in if stored in local storage
 		window.location.replace('dashboard.html');
 	} else {
 		$('#js-login-user-form').on('submit', function(event){
@@ -876,22 +695,9 @@ function loginUser(){
 	}
 }
 
-function userSettings(){
-	logOut();
-	deleteProfile();
-	$("#js-logout").on('click', function(){
-			console.log('User settings')
-
-		localStorage.clear();
-		window.location.replace('login.html')
-	})
-}
-
+// Listen for logout button submit
 function logOut(){
-
 	$("#js-logout").on('submit', function(){
-			console.log('User settings')
-
 		localStorage.clear();
 		window.location.replace('login.html')
 	})
@@ -900,10 +706,8 @@ function logOut(){
 
 //user makes POST to login get JWT
 function postUserLogin(callback, un, pw){
-	console.log(un);
-
 	const settings = {
-		url: DATABASE_URL + 'api/auth/login',
+		url: '/api/auth/login',
 		method: 'POST',
 			data: JSON.stringify({
 				"username": un,
@@ -916,10 +720,8 @@ function postUserLogin(callback, un, pw){
 			success: callback,
 			timeout: 10000,
 			error: function(){
-
-				console.log('error fool');
 				loginAlert();
-				}	
+			}	
 	};
 	$.ajax(settings);	
 }
@@ -931,6 +733,7 @@ function storeAuth(data){
 	window.location.replace('/dashboard.html');
 }
 
+// Get user's Id
 function getUserId(callback){
 	retrieveUsernameFromLocalStorage();
 	const settings = {	
@@ -944,7 +747,7 @@ function getUserId(callback){
 
 		},
 		success: callback,
-		error: console.error('error GET getUserId'+username)		
+		error: console.error('error GET getUserId')		
 	};
 
 	$.ajax(settings);
@@ -954,7 +757,6 @@ function getUserId(callback){
 // POST new userdrawn object
 function createUserdrawnObject(){
 	frameNumber = userArtworkObject.frameCount;
-	// console.log(frameNumber);
 	// POST drawing to frame to userdrawn endpoint
 	// POST title to userdrawn
 	let title = $("#js-title-form").val();
@@ -969,27 +771,16 @@ function createUserdrawnObject(){
 	// POST creationDate
 	let creationDate = new Date();
 	if(drawing[0]){
-		// getAndUpdateUserProfile();
 		postUserDrawn(frameNumber, drawing, title, animationId, artist, creationDate, userId);
 	} else {
 		drawingAlert();
-		console.log('no drawing');
 	}
 }
 
-function drawingAlert(){
-	return alert("Draw Something First!");
-}
-
-
-
-
 // Update animation object
 function updateAnimationObject(animationId, frameNumber){
-	console.log("Frame num "+frameNumber);
-	console.log("updateAnimationObject ran, framenum is "+frameNumber);
 	const settings = {
-		url: DATABASE_URL + 'animations/' + animationId,
+		url: '/animations/' + animationId,
 		method: 'PUT',
 			data: JSON.stringify({
 				"id": animationId,
@@ -1002,46 +793,22 @@ function updateAnimationObject(animationId, frameNumber){
 				'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 				'Content-Type': 'application/json'
 			},
-			success: function(){
-				return console.log('success PUT animation')	
-			} ,
+			success: console.log('success PUT animation'),
 			error: console.error('PUT drawing error')		
 	};
 	$.ajax(settings);
 }
 
-function getAndReturnAnimationInfo(){
-	getAndGatherAnimationInfo();
-}
-
-function getAndReturnArtistInfo(){
-	getUserProfile(returnUserInfo);
-}
-
+// Get and render username
 function getAndRenderUsername(){
 	getUserProfile(renderUsername);
 }
 
-function getAndReturnUsername(){
-	getUserProfile(returnUsername);
-}
-
-function returnUsername(data){
-	return data.userprofile[0].name;
-}
-
-function getAndReturnAnimationId(){
-
-}
-
-function getAndReturnArtistName(){
-
-}
-
-function postUserDrawn(_frameNumber, drawing, _title, _animationId, _artist, _creationDate, _userId){
-	console.log('postUserDrawn ran ' + drawing[0].lines);	
+// post userdrawn object info to userdrawn endpoint
+function postUserDrawn(_frameNumber, drawing, _title, 
+					   _animationId, _artist, _creationDate, _userId){
 	const settings = {
-		url: DATABASE_URL + 'userdrawn',
+		url: '/userdrawn/',
 		method: 'POST',
 		data: JSON.stringify({
 				"frameNumber": _frameNumber,
@@ -1058,17 +825,15 @@ function postUserDrawn(_frameNumber, drawing, _title, _animationId, _artist, _cr
 				'Content-Type': 'application/json'
 			},
 		success: function(data){
-			console.log('data is'+data);
 				artworkId = data._id;
 				getAndUpdateUserProfile();
-				
-				// $("#js-artwork-form").unbind().submit();
 			},
 		error: console.error('POST userdrawn error')		
 	};
 	$.ajax(settings);
 }
 
+// Delete user's profile after click event
 function deleteProfile(){
 	retrieveLocalStorage();
 	$('#js-delete-profile').click(event =>{
@@ -1080,30 +845,26 @@ function deleteProfile(){
 }
 				
 
-//delete userprofile based on id
+//delete userprofile based on id from userprofile endpoint
 function deleteUserProfile(){
-	console.log("deleteUserProfile ran " + userProfileId);
 	const settings = {
-	url: DATABASE_URL + 'userprofile/' + userProfileId,
+	url: '/userprofile/' + userProfileId,
 		method: 'DELETE',
 			dataType: 'json',
 			headers: {
 				'Authorization': "Bearer "+ AUTHORIZATION_CODE,
 				'Content-Type': 'application/json'
 			},
-			success: function(){
-				console.log('success DELETE user');
-				return;
-			},
+			success: console.log('success DELETE user'),
 			error: console.error('DELETE userprofile error')		
 	};
 	$.ajax(settings);
 }
 
+// Delete user from users endpoint
 function deleteUser(){
-	console.log("deleteUser ran "+username);
 	const settings = {
-		url: DATABASE_URL + 'api/users',
+		url: '/api/users',
 		method: 'DELETE',
 		dataType: 'json',
 		data: {username: username},
@@ -1119,41 +880,84 @@ function deleteUser(){
 	$.ajax(settings);
 }
 
+// ***** // ***** // Storage Essentials // ***** // ***** //
+// Retrieve locally stored variables
+function retrieveLocalStorage(){
+	AUTHORIZATION_CODE = localStorage.getItem('auth');
+	username = localStorage.getItem('username');
+	userEndpointId = localStorage.getItem('userEndpointId');
+	userProfileId = localStorage.getItem('userProfileId');
+	artist = localStorage.getItem('artist');
+	animationId = localStorage.getItem('animationId');
+
+	if(!username){
+		window.location.replace('login.html');
+	}
+}
+
+// Retrieve just username from local storage
+function retrieveUsernameFromLocalStorage(){
+	username = localStorage.getItem('username');
+}
+
+// Load auth token from localStorage
+function loadAuthToken(){
+	AUTHORIZATION_CODE = localStorage.getItem('auth');
+}
+
+// Handle css responsiveness
+function handleCss(){
+	let sw = $('.square1').width();
+		$('.square1').height(sw);
+		$('.square2').height(sw);
+		$('.square1').css('border-width',`${sw/10}px`);
+		$('.square2').css('border-width',`${sw/10}px`);
+		$('canvas').height(sw*.95);
+		$('canvas').width(sw*.95);
+		$('canvas').css('margin', sw/100);
+}
+
+// Handle layout responsiveness 
+$(window).resize(function() {
+	let sw = $('.square1').width();
+	$('.square1').height(sw);
+	$('.square2').height(sw);
+	$('.square1').css('border-width',`${sw/10}px`);
+	$('.square2').css('border-width',`${sw/10}px`);
+});
+
+//Run the application
+function runApp(){
+	handleCss();
+	loadAuthToken();
+}
 
 $(runApp)
 
+// P5 sketch to display a single image
 let imageSketch = function(p){
 	let canvasWidth = $("#js-artwork-thumb").width();
 	let initialRadius = canvasWidth/20;
+	// Max width under current bootstrap settings is 1110 
 	let maxWidth = 1110;
+	// Ratio to convert between different sized windows
 	let responsiveRatio = maxWidth/canvasWidth;
-
-	p.preload = function(){
-	
-	}
 
 	p.windowResized = function(){
 		canvasWidth = $("#js-artwork-thumb").width();
 		p.resizeCanvas(canvasWidth,canvasWidth);
 		initialRadius = canvasWidth/20;
-
 	}
-
 
 	p.setup = function() {
 			p.createCanvas(canvasWidth, canvasWidth);
-			// p.background('#a7edff');
-
-			// p.displayDrawing();
 			p.noLoop();
 			p.frameRate(15);
 	}
 
 	p.draw = function(){
 		p.background('#a7edff');
-
 		p.displayDrawing();
-
 	}
 
 	p.displayDrawing = function(){
@@ -1193,19 +997,16 @@ let imageSketch = function(p){
 	}
 }
 
+// P5 sketch to display animation of combined frames
 let theatre = function(p){
 	let frameCount = 0;
-	// let maxWidth = $("#js-theatre-holder").width();
 	let canvasWidth = $("#js-theatre-holder").width();
 	let initialRadius = canvasWidth/20;
+	// Max width under current bootstrap settings is 1110 
 	let maxWidth = 1110;
 	let canvas;
-	// let initialRadius = 50; 
+	// Ratio to convert between different sized windows
 	let responsiveRatio = maxWidth/canvasWidth;
-
-	p.preload = function(){
-
-	}
 
 	p.windowResized = function(){
 		canvasWidth = $("#js-artwork-thumb").width();
@@ -1213,13 +1014,11 @@ let theatre = function(p){
 		initialRadius = canvasWidth/20;
 	}
 
-
 	p.setup = function() {
 			canvas  = p.createCanvas(canvasWidth, canvasWidth);
+		// Add to #js-theatre-holder div
 			canvas.parent('#js-theatre-holder');
-			console.log('Frame is '+canvasWidth)
 			p.frameRate(12);
-
 	}
 
 	p.draw = function(){
@@ -1229,12 +1028,14 @@ let theatre = function(p){
 			let m = Math.floor(p.map(Math.floor(p.mouseX), 0, canvas.width, 0, userTheatre.length));
 			p.displayDrawing(userTheatre[m].frame);
 		} else {
+		// If frame count reaches limit, go back to 0 
 			p.displayDrawing(userTheatre[frameCount].frame);
 			frameCount++;
 			if(frameCount > userTheatre.length-1) frameCount = 0;
 		}
 	}
 
+	//Function that takes data from frame object and converts into image
 	p.displayDrawing = function(frame){
 		if(userTheatre){
 			for (let i = 0; i < frame.length; i++) {

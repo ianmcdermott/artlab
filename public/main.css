@@ -70,12 +70,13 @@ form{
 	padding: 15px;
 }
 
-a:hover{
+p a:hover{
 	text-decoration: none;
+	color: #000;
+	background-color: #FFCE2E;
 }
 
 footer a:hover{
-	/*font-weight: 700;*/
 	color: #000;
 	text-decoration: none;
 	transition: all .2s ease-in-out;
