@@ -214,7 +214,7 @@ class AdsrModule{
     adsrScreen = new AdsrScreen(this.x, 0, this.w, this.h, 5);
 
     for(let i = 0; i < 4; i++){
-      adsrKnob[i] = new Knob((this.w/8+i*this.w/4), this.y+this.h/2, this.w/8, 150, 0, i, ADSR[i]);
+      adsrKnob[i] = new Knob((this.w/8+i*this.w/4), this.y+this.h/2, this.w/8, 150, .5-i*.1, i, ADSR[i]);
     }
   }
 
@@ -269,8 +269,8 @@ class AdsrScreen{
 
     line(0, this.h, midiBar.w/4, this.h-attackHeight);
     line(midiBar.w/4, this.h-attackHeight, midiBar.w/2, this.h-decayHeight);
-    line(midiBar.w/2, this.h-decayHeight, midiBar.w*3/4, this.h-releaseHeight);
-    line(midiBar.w*3/4, this.h-releaseHeight, midiBar.w, this.h);
+    line(midiBar.w/2, this.h-decayHeight, midiBar.w*3/4, this.h-decayHeight);
+    line(midiBar.w*3/4, this.h-decayHeight, midiBar.w, this.h);
     noStroke();
   }
 }
@@ -327,7 +327,17 @@ class Knob{
 		if(this.index % 2 == 1) fill("#FFCE2E");
 		else fill(0);
 		ellipse(0, this.r/3, this.r/4);
+
 		pop();
 		pop();
+
+    push();
+    translate(this.x, this.y)
+
+    fill(255);
+    textSize(30);
+    textAlign(CENTER);
+    text(this.name, 0, 80)
+    pop();
 	}
 }
