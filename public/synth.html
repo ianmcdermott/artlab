@@ -10,20 +10,25 @@
   <script src="libraries/p5.js"></script>
   <script src="libraries/p5.dom.js"></script>
   <script src="libraries/p5.sound.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
   <link href="meyerreset.css" rel="stylesheet" type="text/css">
   <link href="main.css" rel="stylesheet" type="text/css">
     <!-- <script src="sketch.js"></script> -->
-    <script src="synth.js"></script>
 
   </head>
   <body>
 
-    <div id="wrapper">
+   <div id="wrapper">
     <main role="main" class="container">
       <div id="js-instructions" class="col-xl-12">
         <h2>Instructions</h2>
         <p>1. Adjust the waveform to your liking</p>
       </div>
+      <div id="js-synth-holder">
+      </div>
+      <form id="js-sound-form" action="pick.html" method="post">
+        <button id="js-synth-reset">Reset Synth</button>
+        <input type="text" name="Title" placeholder="Title" id="js-title-form">
         <input type="submit" value="Submit Sound" id="js-artwork-submit">
       </form>
 
@@ -34,6 +39,7 @@
       <a href="gallery.html">Gallery</a>
     </footer>
   </div>
+    <script src="synth.js"></script>
 
   </body>
 </html>

@@ -19,7 +19,8 @@ let midiBar;
 let waveTypeButton = [4];
 
 function setup(){
-	createCanvas(800,800);
+	let canvas  = createCanvas(800,800);
+  canvas.parent('js-synth-holder');
 	osc = new p5.Oscillator();
 
 	button = createButton('play/pause');
@@ -45,7 +46,7 @@ function draw(){
     strokeWeight(2);
     noFill();
     stroke(200);
-    line(i*width/4+width/8, 0, i*width/4+width/8, height);
+    line(i*width/4, 0, i*width/4, height);
     stroke(127);
     rect(i*width/4, 0, width/4, height);
   }
@@ -95,15 +96,14 @@ class MIDIBar{
 
   mouseOn(mx, my){
     let d = abs(mx - this.w);
-    if(d < 20){
+    if(d < 20 && my > this.x+this.h && my < this.x+this.h*2){
       this.mouseIsOn = true;
     }
   }
 
   midiBarDragged(mx, my){
-    let d = abs(mx - this.w);
-
-    if(d < 20 && this.mouseIsOn){
+    // let d = abs(mx - this.w);
+    if(this.mouseIsOn){
       this.w = mx;
     }
   }
@@ -141,6 +141,11 @@ function mousePressed(){
   midiBar.mouseOn(mouseX, mouseY);
 }
 
+function mouseClicked(){
+  waveTypeMod.clicked(mouseX, mouseY);
+}
+
+
 
 function mouseReleased(){
   adsrMod.adsrMouseReleased();
@@ -168,7 +173,15 @@ class WaveTypeModule{
     }
   }
 
-
+  clicked(mx, my){
+    if(mx > this.x && mx < this.x+this.w &&
+       my > this.y && my < this.y+this.h){
+      console.log('click');
+      for(let i = 0;i < 4; i++){
+        waveTypeButton[i].clicked(mx, my);
+      }
+    }
+  }
 
   display(){
     fill("#FFCE2E");
@@ -192,12 +205,28 @@ class WaveTypeButton{
       // this.color = random(255,255,255);
   }
 
+  clicked(mx, my){
+    if(mx > this.x-this.w/2 && mx < this.x+this.w/2 &&
+       my > this.y-this.h/2 && my < this.y+this.h/2){
+          osc.setType(this.name);
+          console.log(this.name);
+      }
+  }
+
   display(){
     rectMode(CENTER);
     noStroke();
     if(this.index % 2 == 0) fill(255);
     else fill(0);
     rect(this.x, this.y, this.w, this.h);
+
+    push();
+    translate(this.x, this.y)
+    fill(0);
+    textSize(30);
+    textAlign(CENTER);
+    text(this.name, 0, 70)
+    pop();
   }
 }
 
@@ -260,7 +289,7 @@ class AdsrScreen{
   display(){
     strokeWeight(this.thickness);
     noFill();
-    stroke(255, 0, 0)
+    stroke(0)
     let attackHeight = map(adsrKnob[0].value, 0, 1, 0, this.h);
     let decayHeight = map(adsrKnob[1].value, 0, 1, 0, this.h);
     let susHeight = map(adsrKnob[2].value, 0, 1, 0, this.h);
@@ -304,7 +333,7 @@ class Knob{
 		//map the mouse dragging to be between values of knob
 		let d = dist(mx, my, this.x, this.y)
 		if(d < this.r && this.mouseIsOn){
-			this.value = map(constrain(mx, (this.x-this.r), (this.x+this.r)), (this.x-this.r), (this.x+this.r), 0, 1);
+			this.value = map(constrain(mx, (this.x-this.r), (this.x+this.r)), (this.x-this.r), (this.x+this.r), 0, 1) ;
 			this.theta = map(constrain(mx, (this.x-this.r), (this.x+this.r)), (this.x-this.r), (this.x+this.r), 0, 300);
 		} else {
 			this.mouseIsOn = false;
@@ -333,11 +362,19 @@ class Knob{
 
     push();
     translate(this.x, this.y)
-
     fill(255);
     textSize(30);
     textAlign(CENTER);
     text(this.name, 0, 80)
+    pop();
+
+    push();
+    let decimal = round(this.value*100)/100;
+    translate(this.x, this.y)
+    fill(255);
+    textSize(30);
+    textAlign(CENTER);
+    text(decimal, 0, -60)
     pop();
 	}
 }

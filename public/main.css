@@ -403,7 +403,7 @@ a:active, footer a:active{
 	transform: translate(-50%, -50%);
 }
 
-#js-artwork-clear, #js-artwork-submit, #js-title-form{
+#js-artwork-clear, #js-artwork-submit, #js-title-form, #js-synth-reset{
 	margin: 5px auto;
 	padding: 10px;
 	text-align: center;
