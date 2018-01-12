@@ -24,7 +24,7 @@ function setup(){
 	osc = new p5.Oscillator();
 
 	button = createButton('play/pause');
-	button.mousePressed(toggle);
+	// button.mousePressed(toggle);
 	env = new p5.Env();
 	// env.setADSR(attackTime, decayTime, susPercent, releaseTime);
 	// env.setRange(attackLevel, releaseLevel);
@@ -33,7 +33,7 @@ function setup(){
 	osc.amp(env);
 	osc.freq(432);
   waveTypeMod = new WaveTypeModule(0, height*3/4, width, height/4);
-  playhead = new PlayHead(0, 5);
+  playhead = new PlayHead(-100, 5);
 	// knob = new Knob(width/8, height/2, width/8, 150, 0, "hello");
   adsrMod = new AdsrModule(0, height/2, width, height/4, 0);
   midiBar = new MIDIBar(0, height/4, width/2, height/4)
@@ -52,6 +52,7 @@ function draw(){
   }
   noStroke();
 	playhead.update();
+  playhead.detectMidi();
   midiBar.display();
   playhead.display();
   adsrMod.display();
@@ -74,6 +75,21 @@ class PlayHead{
     this.x+=4;
     if(this.x >= width+this.w){
       this.x = 0;
+    }
+  }
+
+  detectMidi(){
+    let trigger = false;
+
+    
+    if(this.x > midiBar.x && this.x < adsrScreen.adsrLength && trigger == false){
+      console.log("attack");
+      env.play();
+      trigger = true;
+    } else {
+      console.log("release");
+      trigger = false;
+      env.triggerRelease(osc);
     }
   }
 
@@ -105,6 +121,7 @@ class MIDIBar{
     // let d = abs(mx - this.w);
     if(this.mouseIsOn){
       this.w = mx;
+      if(mx > width) this.w = width;
     }
   }
 
@@ -125,6 +142,8 @@ function updateADSR(){
 	let /*this.*/decayTime = adsrKnob[1].value;
 	let /*this.*/susPercent = adsrKnob[2].value;
 	let /*this.*/releaseTime = adsrKnob[3].value;
+  let attackLevel = adsrKnob[4].value;
+  let releaseLevel = adsrKnob[5].value;
 
 	env.setADSR(attackTime, decayTime, susPercent, releaseTime);
 	env.setRange(attackLevel, releaseLevel);
@@ -238,12 +257,12 @@ class AdsrModule{
     this.y = _y;
     this.color = _c;
     
-    let ADSR = ["attack", "decay", "sustain", "release"]
+    let ADSR = ["attack", "decay", "sustain", "release", "attackLevel", "releaseLevel"]
     //update this.w to midibar.w for adsrScreen
     adsrScreen = new AdsrScreen(this.x, 0, this.w, this.h, 5);
 
-    for(let i = 0; i < 4; i++){
-      adsrKnob[i] = new Knob((this.w/8+i*this.w/4), this.y+this.h/2, this.w/8, 150, .5-i*.1, i, ADSR[i]);
+    for(let i = 0; i < ADSR.length; i++){
+      adsrKnob[i] = new Knob((this.w/12+i*this.w/6), this.y+this.h/2, this.w/12, 150, .5, i, ADSR[i]);
     }
   }
 
@@ -284,22 +303,37 @@ class AdsrScreen{
     this.w = _w;
     this.h = _h;
     this.thickness = _thickness;
+    this.adsrLength = 0;
   }
 
   display(){
     strokeWeight(this.thickness);
-    noFill();
-    stroke(0)
-    let attackHeight = map(adsrKnob[0].value, 0, 1, 0, this.h);
-    let decayHeight = map(adsrKnob[1].value, 0, 1, 0, this.h);
-    let susHeight = map(adsrKnob[2].value, 0, 1, 0, this.h);
-    let releaseHeight = map(adsrKnob[3].value, 0, 1, 0, this.h);
+    
 
+    let attackLength = map(adsrKnob[0].value, 0, 1, 0, this.h);
+    let decayLength = map(adsrKnob[1].value, 0, 1, 0, this.h);
+    let susLength = map(adsrKnob[2].value, 0, 1, 0, this.h);
+    let releaseLength = map(adsrKnob[3].value, 0, 1, 0, this.h);
+    let attackHeight = map(adsrKnob[4].value, 0, 1, 0, this.h);
+    let releaseHeight = map(adsrKnob[5].value, 0, 1, 0, this.h);
 
-    line(0, this.h, midiBar.w/4, this.h-attackHeight);
-    line(midiBar.w/4, this.h-attackHeight, midiBar.w/2, this.h-decayHeight);
-    line(midiBar.w/2, this.h-decayHeight, midiBar.w*3/4, this.h-decayHeight);
-    line(midiBar.w*3/4, this.h-decayHeight, midiBar.w, this.h);
+    this.adsrLength = midiBar.w/width*2*(attackLength+decayLength+susLength+releaseLength)
+    // noFill();
+    // stroke(0)
+    // line(0, this.h, midiBar.w/width*2*(attackLength), this.h-attackHeight);
+    // line(midiBar.w/width*2*(attackLength), this.h-attackHeight, midiBar.w/width*2*(attackLength+decayLength), this.h-releaseHeight);
+    // line(midiBar.w/width*2*(attackLength+decayLength), this.h-releaseHeight, midiBar.w/width*2*(attackLength+decayLength+susLength), this.h-releaseHeight);
+    // line(midiBar.w/width*2*(attackLength+decayLength+susLength), this.h-releaseHeight, midiBar.w/width*2*(attackLength+decayLength+susLength+releaseLength), this.h);
+    fill(0);
+    noStroke();
+    beginShape();
+      vertex(this.x, this.h);
+      vertex(midiBar.w/width*2*(attackLength), this.h-attackHeight, this.h-attackHeight);
+      vertex(midiBar.w/width*2*(attackLength+decayLength), this.h-releaseHeight);
+      vertex(midiBar.w/width*2*(attackLength+decayLength+susLength), this.h-releaseHeight);
+      vertex(midiBar.w/width*2*(attackLength+decayLength+susLength+releaseLength), this.h);
+    endShape(CLOSE);
+
     noStroke();
   }
 }
@@ -311,10 +345,12 @@ class Knob{
 		this.y = _y;
 		this.r = _r;
 		this.theta = _theta;
-		this.value = _v;
+		
 		this.mouseIsOn = false;
 		this.index = _index;
 		this.name = _name;
+    if(this.name == "releaseLevel") this.value = _v-_v*3/4; 
+    else this.value = _v;
 		// this.color = random(255,255,255);
 	}
 
