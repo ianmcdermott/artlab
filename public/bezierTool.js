@@ -29,7 +29,8 @@ let shape = {
 			cx1: 410,
 			cy1: 410
 		}
-		]
+		],
+	closed: false
 }
 
 function setup(){
@@ -39,6 +40,7 @@ function setup(){
 function draw(){
 	background(255);
 	drawShape(shape);
+	mouseHover();
 }
 
 function mousePressed(){
@@ -65,8 +67,23 @@ function mousePressed(){
 			addingControlOne = true;
 			shape.b1[shape.b1.length-1].ax = mouseX;				
 			shape.b1[shape.b1.length-1].ay = mouseY;	
-			// drawShape(shape);
+			
+			let closeHover = dist(mouseX, mouseY, shape.ax, shape.ay);
+			if(closeHover < handleRad/2+2){
+				penActive = false;
+				shape.closed = true;
+			}
 		}
+	}
+
+	function mouseHover(){
+		let closeHover = dist(mouseX, mouseY, shape.ax, shape.ay);
+			if(closeHover < handleRad/2+2){
+				fill(255, 0,0);
+				noStroke();
+				text("Close Shape", shape.ax, shape.ay);
+				noFill();
+			}
 	}
 
 
@@ -136,8 +153,8 @@ function drawShape(s){
 			} 
 		}
 	}
-
-	endShape();
+	if(s.closed) endShape(CLOSE);
+	else endShape();
 	for(let i = s.b1.length-2; i < s.b1.length; i++){
 		if(s.b1[4]) console.log("hehe"+s.b1[4].cx2);
 		handle(s.b1[i].cx2, s.b1[i].cy2, s.b1[i-1].ax, s.b1[i-1].ay, "#ff0000");
