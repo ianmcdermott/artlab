@@ -5,7 +5,7 @@ ARTLAB is a collaborative animation app that also acts as a graphics-software te
 
 ![image of dashboard](https://github.com/ianmcdermott/artlab/blob/master/reference/screenshots/dashboard.png)
 
-<h2>Functionality</h2>
+<!--<h2>Functionality</h2>
 <p>This app's functionality includes:</p>
 <ul>
 	<li></li>
@@ -13,7 +13,7 @@ ARTLAB is a collaborative animation app that also acts as a graphics-software te
 	<li></li>
 	<li></li>
 	<li></li>
-</ul>
+</ul>-->
 
 <h2>Technology</h2>
 <p>On the backend, ARTLAB utilizes a RESTful API, using Node.js. On the front end, all of the magic happens through the p5.js library!</p>
